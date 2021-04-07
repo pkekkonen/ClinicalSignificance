@@ -1,0 +1,11 @@
+---
+name:  clinsig
+title: Clinical Significance
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Clinical Significance
+      type:  Preformatted
+
+...
