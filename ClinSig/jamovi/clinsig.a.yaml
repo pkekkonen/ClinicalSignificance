@@ -9,11 +9,11 @@ options:
     - name: data
       type: Data
 
-    - name: dep
+    - name: pre
       title: Dependent Variable
       type: Variable
 
-    - name: group
+    - name: post
       title: Grouping Variable
       type: Variable
 
@@ -31,6 +31,11 @@ options:
 
     - name: varEq
       title: Assume equal variances
+      type: Bool
+      default: true
+    
+    - name: higherBetter
+      title: Is higher better?
       type: Bool
       default: true
 ...

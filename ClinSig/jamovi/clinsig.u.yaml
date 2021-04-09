@@ -12,14 +12,14 @@ children:
         label: Dependent Variable
         children:
           - type: VariablesListBox
-            name: dep
+            name: pre
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
         label: Grouping Variable
         children:
           - type: VariablesListBox
-            name: group
+            name: post
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
@@ -32,3 +32,5 @@ children:
     children:
       - type: CheckBox
         name: varEq
+      - type: CheckBox
+        name: higherBetter

@@ -6,10 +6,11 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            dep = NULL,
-            group = NULL,
+            pre = NULL,
+            post = NULL,
             alt = "notequal",
-            varEq = TRUE, ...) {
+            varEq = TRUE,
+            higherBetter = TRUE, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -17,12 +18,12 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
-            private$..dep <- jmvcore::OptionVariable$new(
-                "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
+            private$..pre <- jmvcore::OptionVariable$new(
+                "pre",
+                pre)
+            private$..post <- jmvcore::OptionVariable$new(
+                "post",
+                post)
             private$..alt <- jmvcore::OptionList$new(
                 "alt",
                 alt,
@@ -35,22 +36,29 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "varEq",
                 varEq,
                 default=TRUE)
+            private$..higherBetter <- jmvcore::OptionBool$new(
+                "higherBetter",
+                higherBetter,
+                default=TRUE)
 
-            self$.addOption(private$..dep)
-            self$.addOption(private$..group)
+            self$.addOption(private$..pre)
+            self$.addOption(private$..post)
             self$.addOption(private$..alt)
             self$.addOption(private$..varEq)
+            self$.addOption(private$..higherBetter)
         }),
     active = list(
-        dep = function() private$..dep$value,
-        group = function() private$..group$value,
+        pre = function() private$..pre$value,
+        post = function() private$..post$value,
         alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        varEq = function() private$..varEq$value,
+        higherBetter = function() private$..higherBetter$value),
     private = list(
-        ..dep = NA,
-        ..group = NA,
+        ..pre = NA,
+        ..post = NA,
         ..alt = NA,
-        ..varEq = NA)
+        ..varEq = NA,
+        ..higherBetter = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -94,10 +102,11 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'
 #' 
 #' @param data .
-#' @param dep .
-#' @param group .
+#' @param pre .
+#' @param post .
 #' @param alt .
 #' @param varEq .
+#' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
@@ -106,28 +115,30 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @export
 clinsig <- function(
     data,
-    dep,
-    group,
+    pre,
+    post,
     alt = "notequal",
-    varEq = TRUE) {
+    varEq = TRUE,
+    higherBetter = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
 
-    if ( ! missing(dep)) dep <- jmvcore::resolveQuo(jmvcore::enquo(dep))
-    if ( ! missing(group)) group <- jmvcore::resolveQuo(jmvcore::enquo(group))
+    if ( ! missing(pre)) pre <- jmvcore::resolveQuo(jmvcore::enquo(pre))
+    if ( ! missing(post)) post <- jmvcore::resolveQuo(jmvcore::enquo(post))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(dep), dep, NULL),
-            `if`( ! missing(group), group, NULL))
+            `if`( ! missing(pre), pre, NULL),
+            `if`( ! missing(post), post, NULL))
 
 
     options <- clinsigOptions$new(
-        dep = dep,
-        group = group,
+        pre = pre,
+        post = post,
         alt = alt,
-        varEq = varEq)
+        varEq = varEq,
+        higherBetter = higherBetter)
 
     analysis <- clinsigClass$new(
         options = options,
