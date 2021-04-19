@@ -7,10 +7,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     private = list(
         .run = function() {
 
-            col_index <- grep(self$options$pre, colnames(self$data)) #get the index of the pre column 
-            m1 <- mean(self$data[,col_index]) #get the mean
-            # sd1 <- sd(self$data$len)
-            results <- m1
+            col_index <- grep(self$options$pre, colnames(self$data)) #get the index of the pre column
+            values_pre = self$data[,col_index] #get the values of pre
+            m1_pre <- mean(values_pre) #get the mean
+            std_pre <- sd(values_pre) # get the standard deviation
+            print(std_pre)
+            results <- m1_pre
             self$results$text$setContent(results) #print the result
 
             # `self$data` contains the data
