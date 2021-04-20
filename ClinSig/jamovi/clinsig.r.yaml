@@ -7,5 +7,12 @@ items:
     - name:  text
       title: Clinical Significance
       type:  Preformatted
+      
+    - name: plot
+      title: Descriptives Plot
+      type: Image
+      width:  400
+      height: 300
+      renderFun: .plot
 
 ...
