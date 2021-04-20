@@ -65,7 +65,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]]),
+        text = function() private$.items[["text"]],
+        clinsig = function() private$.items[["clinsig"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -76,7 +77,27 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Clinical Significance"))}))
+                title="Clinical Significance"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="clinsig",
+                title="Clinical Significance",
+                rows=1,
+                columns=list(
+                    list(
+                        `name`="var", 
+                        `title`="", 
+                        `type`="text"),
+                    list(
+                        `name`="Above and equal to cutoff a)", 
+                        `type`="integer"),
+                    list(
+                        `name`="Below cutoff a)", 
+                        `type`="integer"),
+                    list(
+                        `name`="p", 
+                        `type`="number", 
+                        `format`="zto,pvalue"))))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigBase",
@@ -110,7 +131,14 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$clinsig} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$clinsig$asDF}
+#'
+#' \code{as.data.frame(results$clinsig)}
 #'
 #' @export
 clinsig <- function(

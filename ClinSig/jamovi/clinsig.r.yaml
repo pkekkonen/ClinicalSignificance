@@ -8,4 +8,20 @@ items:
       title: Clinical Significance
       type:  Preformatted
 
+    - name:  clinsig
+      title: Clinical Significance
+      type: Table
+      rows:  1
+      columns:
+        - name: var
+          title: ''
+          type: text
+        - name: Above and equal to cutoff a)
+          type: integer
+        - name: Below cutoff a)
+          type: integer
+        - name: p
+          type: number
+          format: zto,pvalue
+
 ...

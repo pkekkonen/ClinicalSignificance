@@ -12,15 +12,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m_pre <- mean(values_pre) #get the mean
             std_pre <- sd(values_pre) # get the standard deviation
             print(std_pre)
-            if(self$options$higherBetter) # Checks if higher score indicates improvement 
+            if(self$options$higherBetter) # Checks if higher score indicates improvement
                 results_a <- m_pre+2*std_pre
-            else 
+            else
                 results_a <- m_pre-2*std_pre
             self$results$text$setContent(results_a) #print the result
 
             # `self$data` contains the data
             # `self$options` contains the options
             # `self$results` contains the results object (to populate)
+
 
         })
 )
