@@ -44,8 +44,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             standard_error_of_measurement <- std_for_chosen_cutoff_point*sqrt(1-r_value)
             s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
             
-            # We want to create a line (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the following
-            interception_point = -(s_diff*1.96)
+            # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
+            interception_point = s_diff*1.96
 
             self$results$text$setContent(interception_point) # Print r
             
@@ -75,7 +75,10 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # interception_point <- image_dot$state[3]
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
                 geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red") +
-                geom_abline(intercept=interception_point, slope=1)
+                geom_abline(intercept=interception_point, slope=1, linetype="dashed") + # rci boundary
+                geom_abline(intercept=0, slope=1) + # line indicating no change
+                geom_abline(intercept=-interception_point, slope=1, linetype="dashed") # rci boundary
+
             print(dot_plot)
             TRUE
         }
