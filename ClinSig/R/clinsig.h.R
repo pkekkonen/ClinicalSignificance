@@ -8,6 +8,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             pre = NULL,
             post = NULL,
+            valueOfR = NULL,
             alt = "notequal",
             varEq = TRUE,
             higherBetter = TRUE, ...) {
@@ -24,6 +25,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..post <- jmvcore::OptionVariable$new(
                 "post",
                 post)
+            private$..valueOfR <- jmvcore::OptionNumber$new(
+                "valueOfR",
+                valueOfR)
             private$..alt <- jmvcore::OptionList$new(
                 "alt",
                 alt,
@@ -43,6 +47,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
+            self$.addOption(private$..valueOfR)
             self$.addOption(private$..alt)
             self$.addOption(private$..varEq)
             self$.addOption(private$..higherBetter)
@@ -50,12 +55,14 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
+        valueOfR = function() private$..valueOfR$value,
         alt = function() private$..alt$value,
         varEq = function() private$..varEq$value,
         higherBetter = function() private$..higherBetter$value),
     private = list(
         ..pre = NA,
         ..post = NA,
+        ..valueOfR = NA,
         ..alt = NA,
         ..varEq = NA,
         ..higherBetter = NA)
@@ -120,6 +127,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param pre .
 #' @param post .
+#' @param valueOfR .
 #' @param alt .
 #' @param varEq .
 #' @param higherBetter .
@@ -135,6 +143,7 @@ clinsig <- function(
     data,
     pre,
     post,
+    valueOfR,
     alt = "notequal",
     varEq = TRUE,
     higherBetter = TRUE) {
@@ -154,6 +163,7 @@ clinsig <- function(
     options <- clinsigOptions$new(
         pre = pre,
         post = post,
+        valueOfR = valueOfR,
         alt = alt,
         varEq = varEq,
         higherBetter = higherBetter)

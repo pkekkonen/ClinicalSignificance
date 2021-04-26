@@ -34,20 +34,29 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             frequency_df <- as.data.frame(table(df$improved_or_not)) # Frequency dataframe of patient treatments outcomes
             colnames(frequency_df) <- c("improved", "no_of_patients")
 
-            self$results$text$setContent(frequency_df) # Print the result of the frequency dataframe
 
             image <- self$results$plot
             image$setState(frequency_df)
+            
+            # Calculation for RCI
+            r_value <- self$options$valueOfR
+            std_for_chosen_cutoff_point <- sd(values_pre) # OBS! SHOULD BE SD OF THE DECIDED CUTOFF POINT. SO RIGHT NOW ONLY APPLICEABLE IF CUTOFF POINT A IS USED
+            standard_error_of_measurement <- std_for_chosen_cutoff_point*sqrt(1-r_value)
+            s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
+            
+            self$results$text$setContent(r_value) # Print r
+            
+            # We want to create a line (y=kx+m) where x = values_pre, y = values_post, k = 1 and m is the following
+            m_value = -(s_diff*1.96)
 
+            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, results_a = results_a, m_value = m_value) # Dataframe consisting of pre and postvalues
 
-
-            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, results_a = results_a) # Dataframe consisting of pre and postvalues
-
-            colnames(df_dotplot) <- c("values_pre", "values_post", "results_a")
+            colnames(df_dotplot) <- c("values_pre", "values_post", "results_a", "m_value")
 
             image_dot <- self$results$dotplot
-            image_dot$setState(df_dotplot)
-
+            image_dot$setState(df_dotplot)            
+            # image_dot$setState(list(df_dotplot, results_a m_value))            
+            
 
         },
         .plot=function(image, ...) {
@@ -60,8 +69,13 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .dotplot=function(image_dot, ...) {
             plotData <- image_dot$state
             results_a <- image_dot$state$results_a
+            m_value <- image_dot$state$m_value
+            # plotData <- image_dot$state[1]
+            # results_a <- image_dot$state[2]
+            # m_value <- image_dot$state[3]
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
-                geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red")
+                geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red") +
+                geom_abline(a=m_value, b=1)
             print(dot_plot)
             TRUE
         }

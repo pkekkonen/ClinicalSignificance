@@ -16,6 +16,10 @@ options:
     - name: post
       title: Grouping Variable
       type: Variable
+      
+    - name: valueOfR
+      title: Value of r (reliability of measurement)
+      type: Number
 
     - name: alt
       title: Alternative hypothesis
