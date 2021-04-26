@@ -41,9 +41,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
 
-            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post) # Dataframe consisting of pre and postvalues
+            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, results_a = results_a) # Dataframe consisting of pre and postvalues
 
-            colnames(df_dotplot) <- c("values_pre", "values_post")
+            colnames(df_dotplot) <- c("values_pre", "values_post", "results_a")
 
             image_dot <- self$results$dotplot
             image_dot$setState(df_dotplot)
@@ -59,6 +59,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .dotplot=function(image_dot, ...) {
             plotData <- image_dot$state
+            results_a <- image_dot$state$results_a
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
                 geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red")
             print(dot_plot)
