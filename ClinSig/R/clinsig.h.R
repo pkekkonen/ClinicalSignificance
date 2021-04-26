@@ -66,7 +66,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         text = function() private$.items[["text"]],
-        plot = function() private$.items[["plot"]]),
+        plot = function() private$.items[["plot"]],
+        dotplot = function() private$.items[["dotplot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -84,7 +85,14 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Descriptives Plot",
                 width=400,
                 height=300,
-                renderFun=".plot"))}))
+                renderFun=".plot"))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="dotplot",
+                title="Scatter Plot",
+                width=400,
+                height=300,
+                renderFun=".dotplot"))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigBase",
@@ -119,6 +127,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export
