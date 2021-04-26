@@ -18,12 +18,15 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             m_pre <- mean(values_pre) #get the mean
             std_pre <- sd(values_pre) # get the standard deviation
             print(std_pre)
-            if(self$options$higherBetter) # Checks if higher score indicates improvement
-                results_a <- m_pre+2*std_pre
-            else
-                results_a <- m_pre-2*std_pre
 
-            improved_or_not <- c(ifelse(values_pre >= results_a,"yes","no")) # Checks whether or not patient is above or equal to cutoff-point a)
+            if(self$options$higherBetter) { # Checks if higher score indicates improvement
+                results_a <- m_pre+2*std_pre
+                improved_or_not <- c(ifelse(values_pre >= results_a,"yes","no")) # Checks whether or not patient is above cutoff-point a)
+            } else {
+                results_a <- m_pre-2*std_pre
+                improved_or_not <- c(ifelse(values_pre <= results_a,"yes","no")) # Checks whether or not patient is below cutoff-point a)
+            }
+
             score <- c(values_pre) # Patients scores
 
             df <- data.frame(improved_or_not = improved_or_not, score = score) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
