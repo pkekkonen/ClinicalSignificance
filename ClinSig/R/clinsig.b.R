@@ -59,7 +59,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         },
         .dotplot=function(image_dot, ...) {
             plotData <- image_dot$state
-            dot_plot <- qplot(values_pre, values_post, data=plotData)
+            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
+                geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red")
             print(dot_plot)
             TRUE
         }
