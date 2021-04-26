@@ -21,10 +21,10 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             if(self$options$higherBetter) { # Checks if higher score indicates improvement
                 results_a <- m_pre+2*std_pre
-                improved_or_not <- c(ifelse(values_pre >= results_a,"yes","no")) # Checks whether or not patient is above cutoff-point a)
+                improved_or_not <- c(ifelse(values_post >= results_a,"yes","no")) # Checks whether or not patient is above cutoff-point a)
             } else {
                 results_a <- m_pre-2*std_pre
-                improved_or_not <- c(ifelse(values_pre <= results_a,"yes","no")) # Checks whether or not patient is below cutoff-point a)
+                improved_or_not <- c(ifelse(values_post <= results_a,"yes","no")) # Checks whether or not patient is below cutoff-point a)
             }
 
             score <- c(values_pre) # Patients scores
@@ -41,7 +41,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
 
-            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
+            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post) # Dataframe consisting of pre and postvalues
 
             colnames(df_dotplot) <- c("values_pre", "values_post")
 
