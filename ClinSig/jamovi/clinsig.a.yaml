@@ -16,7 +16,7 @@ options:
     - name: post
       title: Grouping Variable
       type: Variable
-      
+
     - name: valueOfR
       title: Value of r (reliability of measurement)
       type: Number
@@ -33,11 +33,23 @@ options:
           name:  twogreater
       default: notequal
 
+    - name: cutoffs
+      title: Cut off points
+      type: List
+      options:
+        - title: Cut off point A
+          name:  a
+        - title: Cut off point B
+          name:  b
+        - title: Cut off point C
+          name:  c
+      default: a
+
     - name: varEq
       title: Assume equal variances
       type: Bool
       default: true
-    
+
     - name: higherBetter
       title: Is higher better?
       type: Bool

@@ -10,6 +10,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             post = NULL,
             valueOfR = NULL,
             alt = "notequal",
+            cutoffs = "a",
             varEq = TRUE,
             higherBetter = TRUE, ...) {
 
@@ -36,6 +37,14 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "onegreater",
                     "twogreater"),
                 default="notequal")
+            private$..cutoffs <- jmvcore::OptionList$new(
+                "cutoffs",
+                cutoffs,
+                options=list(
+                    "a",
+                    "b",
+                    "c"),
+                default="a")
             private$..varEq <- jmvcore::OptionBool$new(
                 "varEq",
                 varEq,
@@ -49,6 +58,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..post)
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..alt)
+            self$.addOption(private$..cutoffs)
             self$.addOption(private$..varEq)
             self$.addOption(private$..higherBetter)
         }),
@@ -57,6 +67,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         post = function() private$..post$value,
         valueOfR = function() private$..valueOfR$value,
         alt = function() private$..alt$value,
+        cutoffs = function() private$..cutoffs$value,
         varEq = function() private$..varEq$value,
         higherBetter = function() private$..higherBetter$value),
     private = list(
@@ -64,6 +75,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..post = NA,
         ..valueOfR = NA,
         ..alt = NA,
+        ..cutoffs = NA,
         ..varEq = NA,
         ..higherBetter = NA)
 )
@@ -129,6 +141,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param post .
 #' @param valueOfR .
 #' @param alt .
+#' @param cutoffs .
 #' @param varEq .
 #' @param higherBetter .
 #' @return A results object containing:
@@ -145,6 +158,7 @@ clinsig <- function(
     post,
     valueOfR,
     alt = "notequal",
+    cutoffs = "a",
     varEq = TRUE,
     higherBetter = TRUE) {
 
@@ -165,6 +179,7 @@ clinsig <- function(
         post = post,
         valueOfR = valueOfR,
         alt = alt,
+        cutoffs = cutoffs,
         varEq = varEq,
         higherBetter = higherBetter)
 
