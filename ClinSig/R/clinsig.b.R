@@ -67,18 +67,22 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             TRUE
         },
         .dotplot=function(image_dot, ...) {
-            plotData <- image_dot$state
+            plotData <- df <- subset(image_dot$state, select = c(values_pre, values_post))
             results_a <- image_dot$state$results_a
             interception_point <- image_dot$state$interception_point
             # plotData <- image_dot$state[1]
             # results_a <- image_dot$state[2]
             # interception_point <- image_dot$state[3]
-            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
-                geom_point(data = plotData, stat="identity") + geom_hline(yintercept = results_a, color = "red") +
-                geom_abline(intercept=interception_point, slope=1, linetype="dashed") + # rci boundary
-                geom_abline(intercept=0, slope=1) + # line indicating no change
-                geom_abline(intercept=-interception_point, slope=1, linetype="dashed") # rci boundary
 
+            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
+                geom_point(data = plotData, stat="identity") + 
+                geom_hline(yintercept = results_a, color = "red", aes(color = "red"), show.legend=TRUE) +
+                geom_abline(aes( intercept=interception_point, slope=1, linetype="dashed")) + # rci boundary
+                geom_abline(aes(intercept=0, slope=1, linetype="solid")) + # line indicating no change  # OBS: När jag lägger linetype i aes dyker legends upp men då blir den faltisla linetypen fel men om jag lägger de utanför dyker inga legends upp :(
+                geom_abline(aes( intercept=-interception_point, slope=1, linetype="dashed"))  # rci boundary 
+             #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
+
+            
             print(dot_plot)
             TRUE
         }
