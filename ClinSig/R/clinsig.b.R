@@ -40,24 +40,32 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
             }
 
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            #                                                        BAR PLOT                                                         #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            
             if(self$options$higherBetter) {
                 improved_or_not <- c(ifelse(values_post >= result_abc,"yes","no")) # Checks whether or not patient is above cutoff-point
             } else {
                 improved_or_not <- c(ifelse(values_post <= result_abc,"yes","no")) # Checks whether or not patient is below cutoff-point
             }
-
-
+            
+            
             score <- c(values_pre) # Patients scores
-
+            
             df <- data.frame(improved_or_not = improved_or_not, score = score) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
-
+            
             frequency_df <- as.data.frame(table(df$improved_or_not)) # Frequency dataframe of patient treatments outcomes
             colnames(frequency_df) <- c("improved", "no_of_patients")
-
-
+            
+            
             image <- self$results$plot
             image$setState(frequency_df)
-
+            
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            #                                                  RCI CALCULATION                                                        #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            
             # Calculation for RCI
             r_value <- self$options$valueOfR
             # std_for_chosen_cutoff_point <- sd(values_pre) # OBS! SHOULD BE SD OF THE DECIDED CUTOFF POINT. SO RIGHT NOW ONLY APPLICEABLE IF CUTOFF POINT A IS USED
@@ -67,11 +75,23 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
             interception_point = s_diff*1.96
 
-            self$results$text$setContent(interception_point) # Print r
 
-            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, result_abc = result_abc, interception_point = interception_point) # Dataframe consisting of pre and postvalues
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            
+            if(self$options$higherBetter) {
+                patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"recovered","improved"),ifelse(values_post-values_pre <= -interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
+            } else {
+                patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"recovered","improved"),ifelse(values_post-values_pre >= interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
+            } 
+            
+            self$results$text$setContent(patient_status) # Print df
+            
+            
 
-            colnames(df_dotplot) <- c("values_pre", "values_post", "result_abc", "interception_point")
+            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point) # Dataframe consisting of pre and postvalues
+            
+
+            colnames(df_dotplot) <- c("values_pre", "values_post", "patient_status", "result_abc", "interception_point")
 
             image_dot <- self$results$dotplot
             image_dot$setState(df_dotplot)
@@ -87,28 +107,29 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             TRUE
         },
         .dotplot=function(image_dot, ...) {
-            plotData <- df <- subset(image_dot$state, select = c(values_pre, values_post))
+            plotData <- df <- subset(image_dot$state, select = c(values_pre, values_post, patient_status))
             result_abc <- image_dot$state$result_abc
             interception_point <- image_dot$state$interception_point
             # plotData <- image_dot$state[1]
             # result <- image_dot$state[2]
             # interception_point <- image_dot$state[3]
 
-            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
-                geom_point(data = plotData, stat="identity") +
+            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post, color = patient_status)) +
+                geom_point() +
                 geom_abline(show.legend = TRUE, aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                 geom_abline(show.legend = TRUE, aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
 
                 geom_abline(show.legend = TRUE, aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
-                # OBS: När jag lägger linetype i aes dyker legends upp men då blir den faltisla linetypen fel men om jag lägger de utanför dyker inga legends upp :(
 
                 geom_abline(show.legend = TRUE, aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                 scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
-                scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
+                # scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
+                #  scale_color_manual(values=c("recovered"="blue", "improved"="green", "unchanged"="red", "detoriated"="yellow"))+
                 theme(legend.position = "right") +
-                labs(color  = "Line explanations", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-
+                # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
+                labs(linetype = "Line explanations") # Used to get legends for both line type and color at the same time
+            
 
             print(dot_plot)
             TRUE
