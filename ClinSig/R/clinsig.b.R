@@ -96,16 +96,18 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
                 geom_point(data = plotData, stat="identity") +
-                geom_hline(yintercept = result_abc, color = "red", aes(color = "red")) +
-                geom_abline(show.legend = TRUE, linetype = "dashed", aes( intercept=interception_point, slope=1, colour="over")) + # rci boundary
+                geom_abline(show.legend = TRUE, aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
+                geom_abline(show.legend = TRUE, aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
 
-                geom_abline(show.legend = TRUE, aes(intercept=0, slope=1, linetype = "no change")) + # line indicating no change
+                geom_abline(show.legend = TRUE, aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
                 # OBS: När jag lägger linetype i aes dyker legends upp men då blir den faltisla linetypen fel men om jag lägger de utanför dyker inga legends upp :(
 
-                geom_abline(show.legend = TRUE, linetype = "dashed", aes( intercept=-interception_point, slope=1, colour="under")) + # rci boundary
+                geom_abline(show.legend = TRUE, aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
-
-                theme(legend.position = "right")
+                scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
+                scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
+                theme(legend.position = "right") +
+                labs(color  = "Line explanations", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
 
 
             print(dot_plot)
