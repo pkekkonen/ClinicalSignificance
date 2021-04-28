@@ -28,7 +28,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 post)
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
-                valueOfR)
+                valueOfR,
+                min=0,
+                max=1)
             private$..alt <- jmvcore::OptionList$new(
                 "alt",
                 alt,
