@@ -59,9 +59,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #                                             PATIENT STATUS CALCULATION                                                  #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             if(self$options$higherBetter) {
-                patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"recovered","improved"),ifelse(values_post-values_pre <= -interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
+                patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= -interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             } else {
-                patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"recovered","improved"),ifelse(values_post-values_pre >= interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
+                patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             }
 
             # self$results$text$setContent(patient_status) # Print df
@@ -92,12 +92,18 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             image <- self$results$plot
             image$setState(frequency_df)
 
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            #                                                        TABLE                                                            #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+            self$results$text$setContent(frequency_df)
 
         },
         .plot=function(image, ...) {
             plotData <- image$state
-            plot <- ggplot(data=plotData, aes(x=patient_status, y=no_of_patients)) +
-                geom_bar(stat="identity") # Barplot
+            plot <- ggplot(data=plotData, aes(x=patient_status, y=no_of_patients, fill = patient_status)) +
+                geom_bar(stat="identity") + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
+                labs(x = NULL, y = "Number of patients", fill = "Patient status") # Barplot
             print(plot)
             TRUE
         },
@@ -105,9 +111,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             plotData <- df <- subset(image_dot$state, select = c(values_pre, values_post, patient_status))
             result_abc <- image_dot$state$result_abc
             interception_point <- image_dot$state$interception_point
-            # plotData <- image_dot$state[1]
-            # result <- image_dot$state[2]
-            # interception_point <- image_dot$state[3]
 
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
                 geom_point(aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
@@ -117,14 +120,14 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
 
                 geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                scale_fill_manual(values=c("recovered"="green", "improved"="blue", "unchanged"="orange", "detoriated"="red"))+
+                scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red"))+
 
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                 scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
                 scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
                 theme(legend.position = "right") +
                 # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                labs(linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time
+                labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time
 
 
             print(dot_plot)
