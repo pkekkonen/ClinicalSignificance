@@ -16,10 +16,16 @@ options:
     - name: post
       title: Post treatment scores
       type: Variable
-      
+
     - name: groupingVar
       title: Grouping variable
       type: Variable
+      default: NULL
+
+    - name: groupingBool
+      title: Grouping?
+      type: Bool
+      default: false
 
     - name: valueOfR
       title: Value of r (reliability of measurement)

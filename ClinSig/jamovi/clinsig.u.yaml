@@ -32,6 +32,11 @@ children:
   - type: LayoutBox
     margin: large
     children:
+      - type: CheckBox
+        name: groupingBool
+  - type: LayoutBox
+    margin: large
+    children:
       - type: TextBox
         name: valueOfR
         format: number

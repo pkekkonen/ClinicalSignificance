@@ -9,6 +9,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             pre = NULL,
             post = NULL,
             groupingVar = NULL,
+            groupingBool = FALSE,
             valueOfR = NULL,
             alt = "notequal",
             cutoffs = "a",
@@ -29,7 +30,12 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 post)
             private$..groupingVar <- jmvcore::OptionVariable$new(
                 "groupingVar",
-                groupingVar)
+                groupingVar,
+                default=NULL)
+            private$..groupingBool <- jmvcore::OptionBool$new(
+                "groupingBool",
+                groupingBool,
+                default=FALSE)
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
                 valueOfR,
@@ -63,6 +69,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
             self$.addOption(private$..groupingVar)
+            self$.addOption(private$..groupingBool)
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..alt)
             self$.addOption(private$..cutoffs)
@@ -73,6 +80,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
         groupingVar = function() private$..groupingVar$value,
+        groupingBool = function() private$..groupingBool$value,
         valueOfR = function() private$..valueOfR$value,
         alt = function() private$..alt$value,
         cutoffs = function() private$..cutoffs$value,
@@ -82,6 +90,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pre = NA,
         ..post = NA,
         ..groupingVar = NA,
+        ..groupingBool = NA,
         ..valueOfR = NA,
         ..alt = NA,
         ..cutoffs = NA,
@@ -149,6 +158,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param pre .
 #' @param post .
 #' @param groupingVar .
+#' @param groupingBool .
 #' @param valueOfR .
 #' @param alt .
 #' @param cutoffs .
@@ -166,7 +176,8 @@ clinsig <- function(
     data,
     pre,
     post,
-    groupingVar,
+    groupingVar = NULL,
+    groupingBool = FALSE,
     valueOfR,
     alt = "notequal",
     cutoffs = "a",
@@ -191,6 +202,7 @@ clinsig <- function(
         pre = pre,
         post = post,
         groupingVar = groupingVar,
+        groupingBool = groupingBool,
         valueOfR = valueOfR,
         alt = alt,
         cutoffs = cutoffs,

@@ -1,5 +1,5 @@
 library(ggplot2) # For plotting
-library("gridExtra") 
+library("gridExtra")
 
 # This file is a generated template, your changes will not be overwritten
 
@@ -53,35 +53,34 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
 
             # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
-            interception_point = s_diff*1.96
+            interception_point <- s_diff*1.96
+            interception_point_minus <- interception_point - (interception_point * 2)
 
 
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                             PATIENT STATUS CALCULATION                                                  #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             if(self$options$higherBetter) {
-                patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= -interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
+                patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             } else {
-                patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
+                patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             }
 
-            self$results$text$setContent(self$options$groupingVar) # Print df
-            
             # Check if grouping variable
-            if(self$options$groupingVar != NULL) {
+            if(isTRUE(self$options$groupingBool)) {
                 col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the post column
                 values_group <- self$data[,col_index_group] #get the values of post
-                
             } else {
-                values_group <- rep(0, length(values_pre)) 
+                values_group <- rep(1, length(values_pre))
             }
-            
-            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, values_group = values_group, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point) # Dataframe consisting of pre and postvalues
-            colnames(df_dotplot) <- c("values_pre", "values_post", "values_group ", "patient_status", "result_abc", "interception_point")
+
+            df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, values_group = values_group, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point, interception_point_minus = interception_point_minus) # Dataframe consisting of pre and postvalues
+            colnames(df_dotplot) <- c("values_pre", "values_post", "values_group ", "patient_status", "result_abc", "interception_point", "interception_point_minus")
+
             image_dot <- self$results$dotplot
             image_dot$setState(df_dotplot)
-            
-            
+
+
             # image_dot$setState(list(df_dotplot, result interception_point))
 
 
@@ -104,79 +103,49 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-            self$results$text$setContent(frequency_df)
-
         },
         .plot=function(image, ...) {
             plotData <- image$state
-            plot <- ggplot(data=plotData, aes(x=patient_status, y=no_of_patients, fill = patient_status)) +
+            plot <- ggplot(data=plotData, aes(x=plotData$patient_status, y=plotData$no_of_patients, fill = plotData$patient_status)) +
                 geom_bar(stat="identity") + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
                 labs(x = NULL, y = "Number of patients", fill = "Patient status") # Barplot
             print(plot)
             TRUE
         },
         .dotplot=function(image_dot, ...) {
-            
-            plotData <- image_dot$state[c(values_pre, values_post, values_group , patient_status)]  
+            plotData <- image_dot$state
             result_abc <- image_dot$state$result_abc
             interception_point <- image_dot$state$interception_point
-            groups <- unique(plotData$values_group) 
-            self$results$text$setContent(groups)
-            
-            if (length(groups) == 1) {
+            interception_point_minus <- image_dot$state$interception_point_minus
+            values_group <- image_dot$state$values_group
+            patient_status <-plotData$patient_status
+            groups <- unique(plotData$values_group)
+
+            if (length(groups) < 3) {
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
-                    geom_point(aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
+                    geom_point(aes(shape = factor(values_group), fill = factor(patient_status)), size=3, stroke=0) +
                     geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                     geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    
+
                     geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
-                    
-                    geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red"))+
-                    
+
+                    geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
+                    scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
+
                     #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
-                    scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
-                    scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
+                    scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
+                    scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                     theme(legend.position = "right") +
                     # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                    labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time
-            } else if(length(groups) == 2) {
-                plot1 <- ggplot(data= plotData[plotData$values_group == groups[1],], aes(x=plotData$values_pre, y = plotData$values_post)) +
-                    geom_point(aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
-                    geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
-                    geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    
-                    geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
-                    
-                    geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red"))+
-                    
-                    #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
-                    scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
-                    scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))
-                plot2 <- ggplot(data=plotData[plotData$values_group == groups[2],], aes(x=plotData$values_pre, y = plotData$values_post)) +
-                    geom_point(aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
-                    geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
-                    geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    
-                    geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
-                    
-                    geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red"))+
-                    
-                    #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
-                    scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
-                    scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
-                    theme(legend.position = "right") +
-                    # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                    labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time
-                    dot_plot <- grid.arrange(plot1, plot2, ncol=2)
+                    labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment") # Used to get legends for both line type and color at the same time
+
             } else {
                 #ERROR too many groups
-                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post))
+                 dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
+                     labs(title = "else")
             }
 
-            
+
             # plot1 <- qplot(1)
             # plot2 <- qplot(1)
             # grid.arrange(plot1, plot2, ncol=2)
