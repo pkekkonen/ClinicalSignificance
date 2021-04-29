@@ -8,7 +8,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             pre = NULL,
             post = NULL,
+            valueOfR = NULL,
             alt = "notequal",
+            cutoffs = "a",
             varEq = TRUE,
             higherBetter = TRUE, ...) {
 
@@ -24,6 +26,11 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..post <- jmvcore::OptionVariable$new(
                 "post",
                 post)
+            private$..valueOfR <- jmvcore::OptionNumber$new(
+                "valueOfR",
+                valueOfR,
+                min=0,
+                max=1)
             private$..alt <- jmvcore::OptionList$new(
                 "alt",
                 alt,
@@ -32,6 +39,14 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "onegreater",
                     "twogreater"),
                 default="notequal")
+            private$..cutoffs <- jmvcore::OptionList$new(
+                "cutoffs",
+                cutoffs,
+                options=list(
+                    "a",
+                    "b",
+                    "c"),
+                default="a")
             private$..varEq <- jmvcore::OptionBool$new(
                 "varEq",
                 varEq,
@@ -43,20 +58,26 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
+            self$.addOption(private$..valueOfR)
             self$.addOption(private$..alt)
+            self$.addOption(private$..cutoffs)
             self$.addOption(private$..varEq)
             self$.addOption(private$..higherBetter)
         }),
     active = list(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
+        valueOfR = function() private$..valueOfR$value,
         alt = function() private$..alt$value,
+        cutoffs = function() private$..cutoffs$value,
         varEq = function() private$..varEq$value,
         higherBetter = function() private$..higherBetter$value),
     private = list(
         ..pre = NA,
         ..post = NA,
+        ..valueOfR = NA,
         ..alt = NA,
+        ..cutoffs = NA,
         ..varEq = NA,
         ..higherBetter = NA)
 )
@@ -65,8 +86,9 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]],
-        clinsig = function() private$.items[["clinsig"]]),
+        table = function() private$.items[["table"]],
+        plot = function() private$.items[["plot"]],
+        dotplot = function() private$.items[["dotplot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -74,30 +96,41 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="Clinical Significance"))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="clinsig",
+                name="table",
                 title="Clinical Significance",
-                rows=1,
                 columns=list(
                     list(
-                        `name`="var", 
+                        `name`="Patient Status", 
                         `title`="", 
-                        `type`="text"),
+                        `type`="number"),
                     list(
-                        `name`="Above and equal to cutoff a)", 
-                        `type`="integer"),
+                        `name`="Detoriated", 
+                        `type`="number"),
                     list(
-                        `name`="Below cutoff a)", 
-                        `type`="integer"),
+                        `name`="Improved", 
+                        `type`="number"),
                     list(
-                        `name`="p", 
-                        `type`="number", 
-                        `format`="zto,pvalue"))))}))
+                        `name`="Recovered", 
+                        `type`="number"),
+                    list(
+                        `name`="Unchanged", 
+                        `type`="number"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Descriptives Plot",
+                width=400,
+                height=300,
+                renderFun=".plot"))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="dotplot",
+                title="Scatter Plot",
+                width=400,
+                height=300,
+                renderFun=".dotplot"))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigBase",
@@ -125,27 +158,32 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param pre .
 #' @param post .
+#' @param valueOfR .
 #' @param alt .
+#' @param cutoffs .
 #' @param varEq .
 #' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$clinsig} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
 #'
-#' \code{results$clinsig$asDF}
+#' \code{results$table$asDF}
 #'
-#' \code{as.data.frame(results$clinsig)}
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 clinsig <- function(
     data,
     pre,
     post,
+    valueOfR,
     alt = "notequal",
+    cutoffs = "a",
     varEq = TRUE,
     higherBetter = TRUE) {
 
@@ -164,7 +202,9 @@ clinsig <- function(
     options <- clinsigOptions$new(
         pre = pre,
         post = post,
+        valueOfR = valueOfR,
         alt = alt,
+        cutoffs = cutoffs,
         varEq = varEq,
         higherBetter = higherBetter)
 

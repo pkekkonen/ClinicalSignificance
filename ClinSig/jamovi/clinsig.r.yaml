@@ -4,24 +4,34 @@ title: Clinical Significance
 jrs:   '1.1'
 
 items:
-    - name:  text
+    - name:  table
       title: Clinical Significance
-      type:  Preformatted
-
-    - name:  clinsig
-      title: Clinical Significance
-      type: Table
-      rows:  1
+      type:  Table
       columns:
-        - name: var
+        - name: Patient Status
           title: ''
-          type: text
-        - name: Above and equal to cutoff a)
-          type: integer
-        - name: Below cutoff a)
-          type: integer
-        - name: p
           type: number
-          format: zto,pvalue
+        - name: Detoriated
+          type: number
+        - name: Improved
+          type: number
+        - name: Recovered
+          type: number
+        - name: Unchanged
+          type: number
+
+    - name: plot
+      title: Descriptives Plot
+      type: Image
+      width:  400
+      height: 300
+      renderFun: .plot
+
+    - name: dotplot
+      title: Scatter Plot
+      type: Image
+      width:  400
+      height: 300
+      renderFun: .dotplot
 
 ...
