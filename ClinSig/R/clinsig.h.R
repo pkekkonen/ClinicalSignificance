@@ -100,11 +100,12 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="table",
                 title="Clinical Significance",
+                rows=1,
                 columns=list(
                     list(
-                        `name`="Patient Status", 
-                        `title`="", 
-                        `type`="number"),
+                        `name`="patient_Status", 
+                        `title`="Patient Status:", 
+                        `type`="text"),
                     list(
                         `name`="Detoriated", 
                         `type`="number"),

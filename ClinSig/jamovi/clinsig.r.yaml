@@ -7,10 +7,11 @@ items:
     - name:  table
       title: Clinical Significance
       type:  Table
+      rows: 1
       columns:
-        - name: Patient Status
-          title: ''
-          type: number
+        - name: patient_Status
+          title: "Patient Status:"
+          type: text
         - name: Detoriated
           type: number
         - name: Improved

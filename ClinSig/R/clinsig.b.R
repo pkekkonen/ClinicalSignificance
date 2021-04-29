@@ -95,7 +95,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-            self$results$table$addRow(RowKey = 1, values = list(
+            self$results$table$setRow(1, values = list(
+                patient_status = "Number of patients",
                 Detoriated = frequency_df$no_of_patients[1],
                 Improved = frequency_df$no_of_patients[2],
                 Recovered = frequency_df$no_of_patients[3],
