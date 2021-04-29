@@ -103,7 +103,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=1,
                 columns=list(
                     list(
-                        `name`="patient_Status", 
+                        `name`="patient_status", 
                         `title`="Patient Status:", 
                         `type`="text"),
                     list(

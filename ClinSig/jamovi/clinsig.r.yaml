@@ -9,7 +9,7 @@ items:
       type:  Table
       rows: 1
       columns:
-        - name: patient_Status
+        - name: patient_status
           title: "Patient Status:"
           type: text
         - name: Detoriated
