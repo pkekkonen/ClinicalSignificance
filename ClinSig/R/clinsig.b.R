@@ -77,15 +77,15 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-            
+            #                                             PATIENT STATUS CALCULATION                                                  #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #             
             if(self$options$higherBetter) {
                 patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"recovered","improved"),ifelse(values_post-values_pre <= -interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
             } else {
                 patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"recovered","improved"),ifelse(values_post-values_pre >= interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
             } 
             
-            self$results$text$setContent(patient_status) # Print df
-            
+            # self$results$text$setContent(patient_status) # Print df
             
 
             df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point) # Dataframe consisting of pre and postvalues
@@ -115,20 +115,21 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # interception_point <- image_dot$state[3]
 
             dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
-                geom_point(show.legend = TRUE, aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
-                geom_abline(show.legend = TRUE, aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
-                geom_abline(show.legend = TRUE, aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
+                geom_point(aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
+                geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
+                geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
 
-                geom_abline(show.legend = TRUE, aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
+                geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
 
-                geom_abline(show.legend = TRUE, aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
+                geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
+                scale_fill_manual(values=c("recovered"="green", "improved"="blue", "unchanged"="orange", "detoriated"="red"))+
+               
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                 scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
                 scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
-                scale_fill_manual(values=c("recovered"="blue", "improved"="green", "unchanged"="orange", "detoriated"="red"))+
                 theme(legend.position = "right") +
                 # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                labs(linetype = "Line explanations", color = "Line explanations", fill= "status") # Used to get legends for both line type and color at the same time 
+                labs(linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time 
             
 
             print(dot_plot)
