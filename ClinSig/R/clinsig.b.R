@@ -114,8 +114,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # result <- image_dot$state[2]
             # interception_point <- image_dot$state[3]
 
-            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post, color = patient_status)) +
-                geom_point() +
+            dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
+                geom_point(show.legend = TRUE, aes( fill = factor(patient_status)), size=3, shape=21, stroke=0) +
                 geom_abline(show.legend = TRUE, aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                 geom_abline(show.legend = TRUE, aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
 
@@ -124,11 +124,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 geom_abline(show.legend = TRUE, aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                 scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
-                # scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
-                #  scale_color_manual(values=c("recovered"="blue", "improved"="green", "unchanged"="red", "detoriated"="yellow"))+
+                scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
+                scale_fill_manual(values=c("recovered"="blue", "improved"="green", "unchanged"="orange", "detoriated"="red"))+
                 theme(legend.position = "right") +
                 # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                labs(linetype = "Line explanations") # Used to get legends for both line type and color at the same time
+                labs(linetype = "Line explanations", color = "Line explanations", fill= "status") # Used to get legends for both line type and color at the same time 
             
 
             print(dot_plot)
