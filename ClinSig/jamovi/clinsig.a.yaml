@@ -10,11 +10,15 @@ options:
       type: Data
 
     - name: pre
-      title: Dependent Variable
+      title: Pre treatment scores
       type: Variable
 
     - name: post
-      title: Grouping Variable
+      title: Post treatment scores
+      type: Variable
+      
+    - name: groupingVar
+      title: Grouping variable
       type: Variable
 
     - name: valueOfR

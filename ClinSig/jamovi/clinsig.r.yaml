@@ -18,8 +18,9 @@ items:
     - name: dotplot
       title: Scatter Plot
       type: Image
-      width:  400
-      height: 300
+      width:  600
+      height: 400
       renderFun: .dotplot
+      
 
 ...

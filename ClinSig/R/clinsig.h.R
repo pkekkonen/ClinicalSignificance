@@ -8,6 +8,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             pre = NULL,
             post = NULL,
+            groupingVar = NULL,
             valueOfR = NULL,
             alt = "notequal",
             cutoffs = "a",
@@ -26,6 +27,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..post <- jmvcore::OptionVariable$new(
                 "post",
                 post)
+            private$..groupingVar <- jmvcore::OptionVariable$new(
+                "groupingVar",
+                groupingVar)
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
                 valueOfR,
@@ -58,6 +62,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
+            self$.addOption(private$..groupingVar)
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..alt)
             self$.addOption(private$..cutoffs)
@@ -67,6 +72,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
+        groupingVar = function() private$..groupingVar$value,
         valueOfR = function() private$..valueOfR$value,
         alt = function() private$..alt$value,
         cutoffs = function() private$..cutoffs$value,
@@ -75,6 +81,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     private = list(
         ..pre = NA,
         ..post = NA,
+        ..groupingVar = NA,
         ..valueOfR = NA,
         ..alt = NA,
         ..cutoffs = NA,
@@ -111,8 +118,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="dotplot",
                 title="Scatter Plot",
-                width=400,
-                height=300,
+                width=600,
+                height=400,
                 renderFun=".dotplot"))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -141,6 +148,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param pre .
 #' @param post .
+#' @param groupingVar .
 #' @param valueOfR .
 #' @param alt .
 #' @param cutoffs .
@@ -158,6 +166,7 @@ clinsig <- function(
     data,
     pre,
     post,
+    groupingVar,
     valueOfR,
     alt = "notequal",
     cutoffs = "a",
@@ -169,16 +178,19 @@ clinsig <- function(
 
     if ( ! missing(pre)) pre <- jmvcore::resolveQuo(jmvcore::enquo(pre))
     if ( ! missing(post)) post <- jmvcore::resolveQuo(jmvcore::enquo(post))
+    if ( ! missing(groupingVar)) groupingVar <- jmvcore::resolveQuo(jmvcore::enquo(groupingVar))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(pre), pre, NULL),
-            `if`( ! missing(post), post, NULL))
+            `if`( ! missing(post), post, NULL),
+            `if`( ! missing(groupingVar), groupingVar, NULL))
 
 
     options <- clinsigOptions$new(
         pre = pre,
         post = post,
+        groupingVar = groupingVar,
         valueOfR = valueOfR,
         alt = alt,
         cutoffs = cutoffs,

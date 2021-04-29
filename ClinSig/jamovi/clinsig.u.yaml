@@ -9,17 +9,24 @@ children:
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
-        label: Dependent Variable
+        label: Pre treatment scores
         children:
           - type: VariablesListBox
             name: pre
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
-        label: Grouping Variable
+        label: Post treatment scores
         children:
           - type: VariablesListBox
             name: post
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Grouping variable
+        children:
+          - type: VariablesListBox
+            name: groupingVar
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
