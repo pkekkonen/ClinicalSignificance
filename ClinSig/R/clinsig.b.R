@@ -40,32 +40,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
             }
 
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-            #                                                        BAR PLOT                                                         #
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-            
-            if(self$options$higherBetter) {
-                improved_or_not <- c(ifelse(values_post >= result_abc,"yes","no")) # Checks whether or not patient is above cutoff-point
-            } else {
-                improved_or_not <- c(ifelse(values_post <= result_abc,"yes","no")) # Checks whether or not patient is below cutoff-point
-            }
-            
-            
-            score <- c(values_pre) # Patients scores
-            
-            df <- data.frame(improved_or_not = improved_or_not, score = score) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
-            
-            frequency_df <- as.data.frame(table(df$improved_or_not)) # Frequency dataframe of patient treatments outcomes
-            colnames(frequency_df) <- c("improved", "no_of_patients")
-            
-            
-            image <- self$results$plot
-            image$setState(frequency_df)
-            
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                  RCI CALCULATION                                                        #
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-            
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
             # Calculation for RCI
             r_value <- self$options$valueOfR
             # std_for_chosen_cutoff_point <- sd(values_pre) # OBS! SHOULD BE SD OF THE DECIDED CUTOFF POINT. SO RIGHT NOW ONLY APPLICEABLE IF CUTOFF POINT A IS USED
@@ -76,20 +55,20 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             interception_point = s_diff*1.96
 
 
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                             PATIENT STATUS CALCULATION                                                  #
-            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #             
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             if(self$options$higherBetter) {
                 patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"recovered","improved"),ifelse(values_post-values_pre <= -interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
             } else {
                 patient_status <- c(ifelse(values_post-values_pre <= -interception_point,ifelse(values_post <= result_abc,"recovered","improved"),ifelse(values_post-values_pre >= interception_point,"detoriated","unchanged"))) # Checks whether or not patient is above cutoff-point
-            } 
-            
+            }
+
             # self$results$text$setContent(patient_status) # Print df
-            
+
 
             df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point) # Dataframe consisting of pre and postvalues
-            
+
 
             colnames(df_dotplot) <- c("values_pre", "values_post", "patient_status", "result_abc", "interception_point")
 
@@ -98,10 +77,26 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             # image_dot$setState(list(df_dotplot, result interception_point))
 
 
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            #                                                        BAR PLOT                                                         #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+            score <- c(values_pre) # Patients scores
+
+            df <- data.frame(patient_status = patient_status, score = score) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
+
+            frequency_df <- as.data.frame(table(df$patient_status)) # Frequency dataframe of patient treatments outcomes
+            colnames(frequency_df) <- c("patient_status", "no_of_patients")
+
+
+            image <- self$results$plot
+            image$setState(frequency_df)
+
+
         },
         .plot=function(image, ...) {
             plotData <- image$state
-            plot <- ggplot(data=plotData, aes(x=improved, y=no_of_patients)) +
+            plot <- ggplot(data=plotData, aes(x=patient_status, y=no_of_patients)) +
                 geom_bar(stat="identity") # Barplot
             print(plot)
             TRUE
@@ -123,14 +118,14 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 geom_abline(aes( intercept=-interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                 scale_fill_manual(values=c("recovered"="green", "improved"="blue", "unchanged"="orange", "detoriated"="red"))+
-               
+
              #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                 scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid"))+
                 scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red"))+
                 theme(legend.position = "right") +
                 # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                labs(linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time 
-            
+                labs(linetype = "Line explanations", color = "Line explanations", fill= "Status") # Used to get legends for both line type and color at the same time
+
 
             print(dot_plot)
             TRUE
