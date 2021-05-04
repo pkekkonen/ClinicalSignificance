@@ -121,6 +121,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             patient_status <-plotData$patient_status
             groups <- unique(plotData$values_group)
 
+            available_filling_shapes <- c(21,22,23,24,25)
+            used_filling_shapes <- FILLING_SHAPES[1:length(groups)]
+
             if (length(groups) < 3) {
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
                     geom_point(aes(shape = factor(values_group), fill = factor(patient_status)), size=3, stroke=0) +
@@ -135,6 +138,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                     scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                     scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
+                    scale_shape_manual(values=filling_values) +
                     theme(legend.position = "right") +
                     # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
                     labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment") # Used to get legends for both line type and color at the same time
