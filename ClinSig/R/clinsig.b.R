@@ -122,7 +122,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             groups <- unique(plotData$values_group)
 
             available_filling_shapes <- c(21,22,23,24,25)
-            used_filling_shapes <- FILLING_SHAPES[1:length(groups)]
+            used_filling_shapes <- available_filling_shapes[1:length(groups)]
 
             if (length(groups) < 3) {
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
@@ -133,12 +133,13 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
 
                     geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
+                    scale_shape_manual(values=used_filling_shapes) +
+                    
                     scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
 
                     #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                     scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                     scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
-                    scale_shape_manual(values=filling_values) +
                     theme(legend.position = "right") +
                     # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
                     labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment") # Used to get legends for both line type and color at the same time
