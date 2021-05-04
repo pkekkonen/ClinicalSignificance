@@ -123,32 +123,38 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             available_filling_shapes <- c(21,22,23,24,25)
             used_filling_shapes <- available_filling_shapes[1:length(groups)]
-
-            if (length(groups) < 3) {
+            
+            filling_shapes <- setNames(used_filling_shapes, groups)
+            
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
-                    geom_point(aes(shape = factor(values_group), fill = factor(patient_status)), size=3, stroke=0) +
                     geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                     geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
 
                     geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
 
                     geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                    scale_shape_manual(values=used_filling_shapes) +
-                    
+
                     scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
 
                     #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                     scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                     scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
-                    theme(legend.position = "right") +
-                    # labs(color  = "Status", linetype = "Line explanations") # Used to get legends for both line type and color at the same time
-                    labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment") # Used to get legends for both line type and color at the same time
+                    theme(legend.position = "right")
+                
+                # Check whether treatment should be with as a variable
+                if (length(groups) == 1) {
+                    dot_plot <- dot_plot +
+                        geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
+                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status") 
+                } else {
+                    dot_plot <- dot_plot +
+                        geom_point(aes(shape = factor(values_group),fill = factor(patient_status)), size=3, stroke=0) +
+                        scale_shape_manual(values=used_filling_shapes) +
+                        guides(fill = guide_legend(override.aes = list(shape = 21)))+
+                        guides(shape = guide_legend(override.aes = list(fill = "black")))+
+                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")     
+                }
 
-            } else {
-                #ERROR too many groups
-                 dot_plot <- ggplot(data=plotData, aes(x=values_pre, y = values_post)) +
-                     labs(title = "else")
-            }
 
 
             # plot1 <- qplot(1)
