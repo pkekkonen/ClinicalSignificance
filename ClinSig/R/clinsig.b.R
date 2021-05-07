@@ -16,10 +16,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             values_pre <- self$data[,col_index_pre] #get the values of pre
             col_index_post <- grep(self$options$post, colnames(self$data)) #get the index of the post column
             values_post <- self$data[,col_index_post] #get the values of post
-            m_pre <- mean(values_pre) #get the mean of pre values
-            m_post <- mean(values_post) #get the mean of post values
-            std_pre <- sd(values_pre) # get the standard deviation of pre values
-            std_post <- sd(values_post) # get the standard deviation of post values
+            
+            if(self$options$manualMean)
+                m_pre <- self$options$dys_mean
+            else
+                m_pre <- mean(values_pre) #get the mean of pre values
+            
+            if(self$options$manualStd)
+                std_pre <- self$options$dys_std
+            else
+                std_pre <- sd(values_pre) # get the standard deviation of pre values
 
 
             if(self$options$cutoffs == "a") { #check which cut off point
@@ -30,6 +36,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
             }
             if(self$options$cutoffs == "b") { #check which cut off point
+                m_post <- self$options$func_mean
+                std_post <- self$options$func_std
+                
                 if(self$options$higherBetter) { # Checks if higher score indicates improvement
                     result_abc <- m_post-2*std_post
                 } else {
@@ -38,6 +47,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             }
             if(self$options$cutoffs == "c") { #check which cut off point
+                m_post <- self$options$func_mean
+                std_post <- self$options$func_std
                 result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
             }
 
@@ -150,7 +161,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     dot_plot <- dot_plot +
                         geom_point(aes(shape = factor(values_group),fill = factor(patient_status)), size=3, stroke=0) +
                         scale_shape_manual(values=used_filling_shapes) +
-                        guides(fill = guide_legend(override.aes = list(shape = 21)))+
+                        guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                         guides(shape = guide_legend(override.aes = list(fill = "black")))+
                         labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")     
                 }

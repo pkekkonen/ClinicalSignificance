@@ -27,8 +27,40 @@ options:
       type: Bool
       default: false
 
+    - name: manualMean
+      title: Manual mean?
+      type: Bool
+      default: false
+            
+    - name: dys_mean
+      title: Dysfunctional mean
+      type: Number
+      default: 0
+    
+    - name: manualStd
+      title: Manual std?
+      type: Bool
+      default: false
+
+          
+    - name: dys_std
+      title: Dysfunctional std
+      type: Number
+      default: 0
+      
+    - name: func_mean
+      title: Functional mean
+      type: Number
+      default: 0
+          
+    - name: func_std
+      title: Functional std
+      type: Number
+      default: 0
+
+    
     - name: valueOfR
-      title: Value of r (reliability of measurement)
+      title: Reliability of measurement
       type: Number
       min: 0
       max: 1
