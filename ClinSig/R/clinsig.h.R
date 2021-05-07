@@ -10,17 +10,13 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             post = NULL,
             groupingVar = NULL,
             groupingBool = FALSE,
-            manualMean = FALSE,
+            dysNorms = "baselineValues",
             dys_mean = 0,
-            manualStd = FALSE,
             dys_std = 0,
             func_mean = 0,
             func_std = 0,
             valueOfR = NULL,
-            alt = "notequal",
-            cutoffs = "a",
-            varEq = TRUE,
-            higherBetter = TRUE, ...) {
+            cutoffs = "a", ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -50,18 +46,17 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "groupingBool",
                 groupingBool,
                 default=FALSE)
-            private$..manualMean <- jmvcore::OptionBool$new(
-                "manualMean",
-                manualMean,
-                default=FALSE)
+            private$..dysNorms <- jmvcore::OptionList$new(
+                "dysNorms",
+                dysNorms,
+                options=list(
+                    "baselineValues",
+                    "manualValues"),
+                default="baselineValues")
             private$..dys_mean <- jmvcore::OptionNumber$new(
                 "dys_mean",
                 dys_mean,
                 default=0)
-            private$..manualStd <- jmvcore::OptionBool$new(
-                "manualStd",
-                manualStd,
-                default=FALSE)
             private$..dys_std <- jmvcore::OptionNumber$new(
                 "dys_std",
                 dys_std,
@@ -79,14 +74,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 valueOfR,
                 min=0,
                 max=1)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
             private$..cutoffs <- jmvcore::OptionList$new(
                 "cutoffs",
                 cutoffs,
@@ -95,63 +82,43 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "b",
                     "c"),
                 default="a")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
-            private$..higherBetter <- jmvcore::OptionBool$new(
-                "higherBetter",
-                higherBetter,
-                default=TRUE)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
             self$.addOption(private$..groupingVar)
             self$.addOption(private$..groupingBool)
-            self$.addOption(private$..manualMean)
+            self$.addOption(private$..dysNorms)
             self$.addOption(private$..dys_mean)
-            self$.addOption(private$..manualStd)
             self$.addOption(private$..dys_std)
             self$.addOption(private$..func_mean)
             self$.addOption(private$..func_std)
             self$.addOption(private$..valueOfR)
-            self$.addOption(private$..alt)
             self$.addOption(private$..cutoffs)
-            self$.addOption(private$..varEq)
-            self$.addOption(private$..higherBetter)
         }),
     active = list(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
         groupingVar = function() private$..groupingVar$value,
         groupingBool = function() private$..groupingBool$value,
-        manualMean = function() private$..manualMean$value,
+        dysNorms = function() private$..dysNorms$value,
         dys_mean = function() private$..dys_mean$value,
-        manualStd = function() private$..manualStd$value,
         dys_std = function() private$..dys_std$value,
         func_mean = function() private$..func_mean$value,
         func_std = function() private$..func_std$value,
         valueOfR = function() private$..valueOfR$value,
-        alt = function() private$..alt$value,
-        cutoffs = function() private$..cutoffs$value,
-        varEq = function() private$..varEq$value,
-        higherBetter = function() private$..higherBetter$value),
+        cutoffs = function() private$..cutoffs$value),
     private = list(
         ..pre = NA,
         ..post = NA,
         ..groupingVar = NA,
         ..groupingBool = NA,
-        ..manualMean = NA,
+        ..dysNorms = NA,
         ..dys_mean = NA,
-        ..manualStd = NA,
         ..dys_std = NA,
         ..func_mean = NA,
         ..func_std = NA,
         ..valueOfR = NA,
-        ..alt = NA,
-        ..cutoffs = NA,
-        ..varEq = NA,
-        ..higherBetter = NA)
+        ..cutoffs = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -238,17 +205,13 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param post .
 #' @param groupingVar .
 #' @param groupingBool .
-#' @param manualMean .
+#' @param dysNorms .
 #' @param dys_mean .
-#' @param manualStd .
 #' @param dys_std .
 #' @param func_mean .
 #' @param func_std .
 #' @param valueOfR .
-#' @param alt .
 #' @param cutoffs .
-#' @param varEq .
-#' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
@@ -270,17 +233,13 @@ clinsig <- function(
     post,
     groupingVar = NULL,
     groupingBool = FALSE,
-    manualMean = FALSE,
+    dysNorms = "baselineValues",
     dys_mean = 0,
-    manualStd = FALSE,
     dys_std = 0,
     func_mean = 0,
     func_std = 0,
     valueOfR,
-    alt = "notequal",
-    cutoffs = "a",
-    varEq = TRUE,
-    higherBetter = TRUE) {
+    cutoffs = "a") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -301,17 +260,13 @@ clinsig <- function(
         post = post,
         groupingVar = groupingVar,
         groupingBool = groupingBool,
-        manualMean = manualMean,
+        dysNorms = dysNorms,
         dys_mean = dys_mean,
-        manualStd = manualStd,
         dys_std = dys_std,
         func_mean = func_mean,
         func_std = func_std,
         valueOfR = valueOfR,
-        alt = alt,
-        cutoffs = cutoffs,
-        varEq = varEq,
-        higherBetter = higherBetter)
+        cutoffs = cutoffs)
 
     analysis <- clinsigClass$new(
         options = options,

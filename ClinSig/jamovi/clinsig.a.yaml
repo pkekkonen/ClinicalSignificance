@@ -35,75 +35,54 @@ options:
       type: Bool
       default: false
 
-    - name: manualMean
-      title: Manual mean?
-      type: Bool
-      default: false
+      
+    - name: dysNorms
+      title: Dysfunctional norms
+      type: List
+      options:
+        - name: baselineValues
+          title: "Baseline values"
+        - name: manualValues
+          title: "Manual values"
+      default: baselineValues
             
     - name: dys_mean
-      title: Dysfunctional mean
+      title: "Mean:"
       type: Number
       default: 0
-    
-    - name: manualStd
-      title: Manual std?
-      type: Bool
-      default: false
-
           
     - name: dys_std
-      title: Dysfunctional std
+      title: "Std dev:"
       type: Number
       default: 0
       
     - name: func_mean
-      title: Functional mean
+      title: "Mean:"
       type: Number
       default: 0
           
     - name: func_std
-      title: Functional std
+      title: "Std dev:"
       type: Number
       default: 0
 
     
     - name: valueOfR
-      title: Value
+      title: "Value:"
       type: Number
       min: 0
       max: 1
 
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
 
     - name: cutoffs
-      title: Cut off points
       type: List
       options:
-        - title: Cut off point A
+        - title: Cutoff point A
           name:  a
-        - title: Cut off point B
+        - title: Cutoff point B
           name:  b
-        - title: Cut off point C
+        - title: Cutoff point C
           name:  c
       default: a
 
-    - name: varEq
-      title: Assume equal variances
-      type: Bool
-      default: true
-
-    - name: higherBetter
-      title: Is higher better?
-      type: Bool
-      default: true
 ...
