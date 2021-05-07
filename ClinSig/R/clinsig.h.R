@@ -16,10 +16,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             func_mean = 0,
             func_std = 0,
             valueOfR = NULL,
-            alt = "notequal",
-            cutoffs = "a",
-            varEq = TRUE,
-            higherBetter = TRUE, ...) {
+            cutoffs = "a", ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -77,14 +74,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 valueOfR,
                 min=0,
                 max=1)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
             private$..cutoffs <- jmvcore::OptionList$new(
                 "cutoffs",
                 cutoffs,
@@ -93,14 +82,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "b",
                     "c"),
                 default="a")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
-            private$..higherBetter <- jmvcore::OptionBool$new(
-                "higherBetter",
-                higherBetter,
-                default=TRUE)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
@@ -112,10 +93,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..func_mean)
             self$.addOption(private$..func_std)
             self$.addOption(private$..valueOfR)
-            self$.addOption(private$..alt)
             self$.addOption(private$..cutoffs)
-            self$.addOption(private$..varEq)
-            self$.addOption(private$..higherBetter)
         }),
     active = list(
         pre = function() private$..pre$value,
@@ -128,10 +106,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         func_mean = function() private$..func_mean$value,
         func_std = function() private$..func_std$value,
         valueOfR = function() private$..valueOfR$value,
-        alt = function() private$..alt$value,
-        cutoffs = function() private$..cutoffs$value,
-        varEq = function() private$..varEq$value,
-        higherBetter = function() private$..higherBetter$value),
+        cutoffs = function() private$..cutoffs$value),
     private = list(
         ..pre = NA,
         ..post = NA,
@@ -143,10 +118,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..func_mean = NA,
         ..func_std = NA,
         ..valueOfR = NA,
-        ..alt = NA,
-        ..cutoffs = NA,
-        ..varEq = NA,
-        ..higherBetter = NA)
+        ..cutoffs = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -234,10 +206,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param func_mean .
 #' @param func_std .
 #' @param valueOfR .
-#' @param alt .
 #' @param cutoffs .
-#' @param varEq .
-#' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
@@ -264,10 +233,7 @@ clinsig <- function(
     func_mean = 0,
     func_std = 0,
     valueOfR,
-    alt = "notequal",
-    cutoffs = "a",
-    varEq = TRUE,
-    higherBetter = TRUE) {
+    cutoffs = "a") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -294,10 +260,7 @@ clinsig <- function(
         func_mean = func_mean,
         func_std = func_std,
         valueOfR = valueOfR,
-        alt = alt,
-        cutoffs = cutoffs,
-        varEq = varEq,
-        higherBetter = higherBetter)
+        cutoffs = cutoffs)
 
     analysis <- clinsigClass$new(
         options = options,

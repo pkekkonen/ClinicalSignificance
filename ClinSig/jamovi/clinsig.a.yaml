@@ -73,17 +73,6 @@ options:
       min: 0
       max: 1
 
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
 
     - name: cutoffs
       type: List
@@ -96,13 +85,4 @@ options:
           name:  c
       default: a
 
-    - name: varEq
-      title: Assume equal variances
-      type: Bool
-      default: true
-
-    - name: higherBetter
-      title: Is higher better?
-      type: Bool
-      default: true
 ...

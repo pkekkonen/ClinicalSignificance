@@ -42,20 +42,18 @@ children:
         children:
           - type: Label
             label: Dysfunctional norms
-            children: 
+            children:
               - type: RadioButton
                 name: baseline
                 optionName: dysNorms
                 optionPart: baselineValues
-                label: "Baseline values"
-
+                label: Baseline values
               - type: RadioButton
                 name: manual
                 optionName: dysNorms
                 optionPart: manualValues
-                label: "Manual values"
+                label: Manual values
                 children:
-                
                   - type: TextBox
                     name: dys_mean
                     format: number
@@ -64,47 +62,50 @@ children:
                     name: dys_std
                     format: number
                     enable: (manual)
-                    
           - type: Label
             label: Functional norms
-            children: 
+            children:
               - type: TextBox
                 name: func_mean
                 format: number
+                enable: (b || c)
               - type: TextBox
                 name: func_std
                 format: number
-                
+                enable: (b || c)
       - type: LayoutBox
         cell:
-            column: 1
-            row: 0
+          column: 1
+          row: 0
         stretchFactor: 1
         children:
           - type: Label
             label: Cutoff point
-            children: 
-              - type: ComboBox
-                name: cutoffs
+            children:
+              - type: RadioButton
+                name: a
+                optionName: cutoffs
+                optionPart: a
+                label: A
+              - type: RadioButton
+                name: b
+                optionName: cutoffs
+                optionPart: b
+                label: B
+              - type: RadioButton
+                name: c
+                style: inline
+                optionName: cutoffs
+                optionPart: c
+                label: C
           - type: Label
             label: Reliability of measurement
             children:
               - type: TextBox
                 name: valueOfR
                 format: number
-
           - type: Label
-            label: Options
-            children: 
+            label: Grouping
+            children:
               - type: CheckBox
                 name: groupingBool
-              - type: CheckBox
-                name: higherBetter
-          - type: ComboBox
-            name: alt
-
-
-          - type: CheckBox
-            name: varEq
-
-
