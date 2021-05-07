@@ -43,19 +43,28 @@ children:
           - type: Label
             label: Dysfunctional norms
             children: 
-              - type: CheckBox
-                name: manualMean
+              - type: RadioButton
+                name: baseline
+                optionName: dysNorms
+                optionPart: baselineValues
+                label: "Baseline values"
 
-              - type: TextBox
-                name: dys_mean
-                format: number
-                enable: (manualMean)
-              - type: CheckBox
-                name: manualStd
-              - type: TextBox
-                name: dys_std
-                format: number
-                enable: (manualStd)
+              - type: RadioButton
+                name: manual
+                optionName: dysNorms
+                optionPart: manualValues
+                label: "Manual values"
+                children:
+                
+                  - type: TextBox
+                    name: dys_mean
+                    format: number
+                    enable: (manual)
+                  - type: TextBox
+                    name: dys_std
+                    format: number
+                    enable: (manual)
+                    
           - type: Label
             label: Functional norms
             children: 
