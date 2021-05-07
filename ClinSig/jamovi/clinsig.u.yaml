@@ -82,22 +82,28 @@ children:
           - type: Label
             label: Cutoff point
             children:
-              - type: RadioButton
-                name: a
-                optionName: cutoffs
-                optionPart: a
-                label: A
-              - type: RadioButton
-                name: b
-                optionName: cutoffs
-                optionPart: b
-                label: B
-              - type: RadioButton
-                name: c
+              - type: LayoutBox
                 style: inline
-                optionName: cutoffs
-                optionPart: c
-                label: C
+                verticalAlignment: center
+                children:
+                  - type: RadioButton
+                    name: a
+                    horizontalAlignment: left
+                    optionName: cutoffs
+                    optionPart: a
+                    label: A
+                  - type: RadioButton
+                    name: b
+                    horizontalAlignment: center
+                    optionName: cutoffs
+                    optionPart: b
+                    label: B
+                  - type: RadioButton
+                    name: c
+                    horizontalAlignment: right
+                    optionName: cutoffs
+                    optionPart: c
+                    label: C
           - type: Label
             label: Reliability of measurement
             children:
