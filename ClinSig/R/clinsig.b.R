@@ -17,15 +17,13 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             col_index_post <- grep(self$options$post, colnames(self$data)) #get the index of the post column
             values_post <- self$data[,col_index_post] #get the values of post
 
-            if(self$options$manualMean)
+            if(self$options$dysNorms == "Manual values") {
                 m_pre <- self$options$dys_mean
-            else
-                m_pre <- mean(values_pre) #get the mean of pre values
-
-            if(self$options$manualStd)
                 std_pre <- self$options$dys_std
-            else
+            } else {
+                m_pre <- mean(values_pre) #get the mean of pre values
                 std_pre <- sd(values_pre) # get the standard deviation of pre values
+            }
 
 
             if(self$options$cutoffs == "a") { #check which cut off point

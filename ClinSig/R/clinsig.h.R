@@ -16,7 +16,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             func_mean = 0,
             func_std = 0,
             valueOfR = NULL,
-            cutoffs = "a", ...) {
+            cutoffs = "a",
+            higherBetter = TRUE, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -82,6 +83,10 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "b",
                     "c"),
                 default="a")
+            private$..higherBetter <- jmvcore::OptionBool$new(
+                "higherBetter",
+                higherBetter,
+                default=TRUE)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
@@ -94,6 +99,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..func_std)
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..cutoffs)
+            self$.addOption(private$..higherBetter)
         }),
     active = list(
         pre = function() private$..pre$value,
@@ -106,7 +112,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         func_mean = function() private$..func_mean$value,
         func_std = function() private$..func_std$value,
         valueOfR = function() private$..valueOfR$value,
-        cutoffs = function() private$..cutoffs$value),
+        cutoffs = function() private$..cutoffs$value,
+        higherBetter = function() private$..higherBetter$value),
     private = list(
         ..pre = NA,
         ..post = NA,
@@ -118,7 +125,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..func_mean = NA,
         ..func_std = NA,
         ..valueOfR = NA,
-        ..cutoffs = NA)
+        ..cutoffs = NA,
+        ..higherBetter = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -212,6 +220,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param func_std .
 #' @param valueOfR .
 #' @param cutoffs .
+#' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
@@ -239,7 +248,8 @@ clinsig <- function(
     func_mean = 0,
     func_std = 0,
     valueOfR,
-    cutoffs = "a") {
+    cutoffs = "a",
+    higherBetter = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -266,7 +276,8 @@ clinsig <- function(
         func_mean = func_mean,
         func_std = func_std,
         valueOfR = valueOfR,
-        cutoffs = cutoffs)
+        cutoffs = cutoffs,
+        higherBetter = higherBetter)
 
     analysis <- clinsigClass$new(
         options = options,
