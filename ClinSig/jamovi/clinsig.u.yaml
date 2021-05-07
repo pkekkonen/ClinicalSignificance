@@ -72,21 +72,30 @@ children:
             row: 0
         stretchFactor: 1
         children:
-          - type: CheckBox
-            name: groupingBool
-            
-          - type: TextBox
-            name: valueOfR
-            format: number
+          - type: Label
+            label: Cutoff point
+            children: 
+              - type: ComboBox
+                name: cutoffs
+          - type: Label
+            label: Reliability of measurement
+            children:
+              - type: TextBox
+                name: valueOfR
+                format: number
 
+          - type: Label
+            label: Options
+            children: 
+              - type: CheckBox
+                name: groupingBool
+              - type: CheckBox
+                name: higherBetter
           - type: ComboBox
             name: alt
 
-          - type: ComboBox
-            name: cutoffs
 
           - type: CheckBox
             name: varEq
-          - type: CheckBox
-            name: higherBetter
+
 

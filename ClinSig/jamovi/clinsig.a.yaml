@@ -12,15 +12,23 @@ options:
     - name: pre
       title: Pre treatment scores
       type: Variable
+      suggested:
+        - continuous
 
     - name: post
       title: Post treatment scores
       type: Variable
+      suggested:
+        - continuous
 
     - name: groupingVar
       title: Grouping variable
       type: Variable
       default: NULL
+      suggested:
+        - continuous
+        - nominal
+        - ordinal
 
     - name: groupingBool
       title: Grouping?
@@ -60,7 +68,7 @@ options:
 
     
     - name: valueOfR
-      title: Reliability of measurement
+      title: Value
       type: Number
       min: 0
       max: 1
