@@ -4,36 +4,9 @@ title: Clinical Significance
 jrs:   '1.1'
 
 items:
-    - name:  table
+    - name:  text
       title: Clinical Significance
-      type:  Table
-      rows: 1
-      columns:
-        - name: patient_status
-          title: "Patient Status:"
-          type: text
-        - name: Detoriated
-          type: number
-        - name: Improved
-          type: number
-        - name: Recovered
-          type: number
-        - name: Unchanged
-          type: number
-
-    - name: plot
-      title: Descriptives Plot
-      type: Image
-      width:  400
-      height: 300
-      renderFun: .plot
-
-    - name: dotplot
-      title: Scatter Plot
-      type: Image
-      width:  400
-      height: 300
-      renderFun: .dotplot
+      type:  Preformatted
 
     - name: plot
       title: Descriptives Plot
