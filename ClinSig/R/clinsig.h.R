@@ -74,6 +74,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "func_std",
                 func_std,
                 default=0)
+                post)
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
                 valueOfR,
@@ -159,6 +160,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         text = function() private$.items[["text"]],
+        table = function() private$.items[["table"]],
         plot = function() private$.items[["plot"]],
         dotplot = function() private$.items[["dotplot"]]),
     private = list(),
@@ -168,7 +170,36 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="table",
+                title="Clinical Significance",
+                rows=1,
+                columns=list(
+                    list(
+                        `name`="patient_status", 
+                        `title`="Patient Status:", 
+                        `type`="text"),
+                    list(
+                        `name`="Detoriated", 
+                        `type`="number"),
+                    list(
+                        `name`="Improved", 
+                        `type`="number"),
+                    list(
+                        `name`="Recovered", 
+                        `type`="number"),
+                    list(
+                        `name`="Unchanged", 
+                        `type`="number"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="plot",
+                title="Descriptives Plot",
+                width=400,
+                height=300,
+                renderFun=".plot"))
+            self$add(jmvcore::Image$new(
                 options=options,
                 name="text",
                 title="Clinical Significance"))
@@ -185,6 +216,10 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Scatter Plot",
                 width=600,
                 height=400,
+                name="dotplot",
+                title="Scatter Plot",
+                width=400,
+                height=300,
                 renderFun=".dotplot"))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -229,9 +264,16 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$table$asDF}
+#'
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 clinsig <- function(

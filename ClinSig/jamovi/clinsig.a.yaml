@@ -73,6 +73,12 @@ options:
       min: 0
       max: 1
 
+    - name: valueOfR
+      title: Value of r (reliability of measurement)
+      type: Number
+      min: 0
+      max: 1
+
     - name: alt
       title: Alternative hypothesis
       type: List
