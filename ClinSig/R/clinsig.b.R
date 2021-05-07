@@ -16,12 +16,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             values_pre <- self$data[,col_index_pre] #get the values of pre
             col_index_post <- grep(self$options$post, colnames(self$data)) #get the index of the post column
             values_post <- self$data[,col_index_post] #get the values of post
-            
+
             if(self$options$manualMean)
                 m_pre <- self$options$dys_mean
             else
                 m_pre <- mean(values_pre) #get the mean of pre values
-            
+
             if(self$options$manualStd)
                 std_pre <- self$options$dys_std
             else
@@ -38,7 +38,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if(self$options$cutoffs == "b") { #check which cut off point
                 m_post <- self$options$func_mean
                 std_post <- self$options$func_std
-                
+
                 if(self$options$higherBetter) { # Checks if higher score indicates improvement
                     result_abc <- m_post-2*std_post
                 } else {
@@ -114,6 +114,17 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+            self$results$table$setRow(1, values = list(
+                patient_status = "Number of patients",
+                Detoriated = frequency_df$no_of_patients[1],
+                Improved = frequency_df$no_of_patients[2],
+                Recovered = frequency_df$no_of_patients[3],
+                Unchanged = frequency_df$no_of_patients[4]
+
+            ))
+
+            print(self$results$table)
+
         },
         .plot=function(image, ...) {
             plotData <- image$state
@@ -134,9 +145,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             available_filling_shapes <- c(21,22,23,24,25)
             used_filling_shapes <- available_filling_shapes[1:length(groups)]
-            
+
             filling_shapes <- setNames(used_filling_shapes, groups)
-            
+
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
                     geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                     geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
@@ -151,19 +162,19 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                     scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                     theme(legend.position = "right")
-                
+
                 # Check whether treatment should be with as a variable
                 if (length(groups) == 1) {
                     dot_plot <- dot_plot +
                         geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
-                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status") 
+                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status")
                 } else {
                     dot_plot <- dot_plot +
                         geom_point(aes(shape = factor(values_group),fill = factor(patient_status)), size=3, stroke=0) +
                         scale_shape_manual(values=used_filling_shapes) +
                         guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                         guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")     
+                        labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")
                 }
 
 

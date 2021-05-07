@@ -158,7 +158,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]],
+        table = function() private$.items[["table"]],
         plot = function() private$.items[["plot"]],
         dotplot = function() private$.items[["dotplot"]]),
     private = list(),
@@ -168,10 +168,28 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
-            self$add(jmvcore::Preformatted$new(
+            self$add(jmvcore::Table$new(
                 options=options,
-                name="text",
-                title="Clinical Significance"))
+                name="table",
+                title="Clinical Significance",
+                rows=1,
+                columns=list(
+                    list(
+                        `name`="patient_status", 
+                        `title`="Patient Status:", 
+                        `type`="text"),
+                    list(
+                        `name`="Detoriated", 
+                        `type`="number"),
+                    list(
+                        `name`="Improved", 
+                        `type`="number"),
+                    list(
+                        `name`="Recovered", 
+                        `type`="number"),
+                    list(
+                        `name`="Unchanged", 
+                        `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
@@ -228,10 +246,16 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$table$asDF}
+#'
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 clinsig <- function(
