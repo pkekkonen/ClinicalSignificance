@@ -158,6 +158,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
+        text = function() private$.items[["text"]],
         table = function() private$.items[["table"]],
         plot = function() private$.items[["plot"]],
         dotplot = function() private$.items[["dotplot"]]),
@@ -168,11 +169,15 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text",
+                title="Table - Clinical Significances"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="table",
                 title="Clinical Significance",
-                rows=1,
+                rows=0,
                 columns=list(
                     list(
                         `name`="patient_status", 
@@ -246,6 +251,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param higherBetter .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr

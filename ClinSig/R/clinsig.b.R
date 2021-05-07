@@ -101,36 +101,48 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             score <- c(values_pre) # Patients scores
 
-            df <- data.frame(patient_status = patient_status, score = score) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
+            df <- data.frame(patient_status = patient_status, score = score, values_group = values_group) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
 
-            frequency_df <- as.data.frame(table(df$patient_status)) # Frequency dataframe of patient treatments outcomes
-            colnames(frequency_df) <- c("patient_status", "no_of_patients")
+            frequency_df <- as.data.frame(table(df$patient_status, df$values_group)) # Frequency dataframe of patient treatments outcomes
+            colnames(frequency_df) <- c("patient_status", "values_group", "no_of_patients")
 
 
             image <- self$results$plot
             image$setState(frequency_df)
 
+
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-            self$results$table$setRow(1, values = list(
-                patient_status = "Number of patients",
-                Detoriated = frequency_df$no_of_patients[1],
-                Improved = frequency_df$no_of_patients[2],
-                Recovered = frequency_df$no_of_patients[3],
-                Unchanged = frequency_df$no_of_patients[4]
+            tabble <- self$results$text$setContent(frequency_df)
 
-            ))
+            i <- 1
+            for (values_group in frequency_df)
+                self$results$table$addRow(i, values = list(
+                    patient_status = "Number of patients",
+                    Detoriated = frequency_df$no_of_patients[1 + i],
+                    Improved = frequency_df$sno_of_patients[2 + i],
+                    Recovered = frequency_df$no_of_patients[3 + i],
+                    Unchanged = frequency_df$no_of_patients[4 + i]
+                ))
+                i <- i + 4
+
 
             print(self$results$table)
 
         },
+        .text=function(tabble, ...) {
+            plotData <- tabble$content
+            text <- plotData
+            print(text)
+            TRUE
+        },
         .plot=function(image, ...) {
             plotData <- image$state
-            plot <- ggplot(data=plotData, aes(x=plotData$patient_status, y=plotData$no_of_patients, fill = plotData$patient_status)) +
-                geom_bar(stat="identity") + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-                labs(x = NULL, y = "Number of patients", fill = "Patient status") # Barplot
+            plot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
+                geom_bar(stat="identity", position = position_dodge()) + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
+                labs(x = "Treatments", y = "Number of patients", fill = "Patient status") # Barplot
             print(plot)
             TRUE
         },
