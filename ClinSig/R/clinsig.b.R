@@ -115,16 +115,26 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             tabble <- self$results$text$setContent(frequency_df)
 
-            i <- 1
-            for (values_group in frequency_df)
-                self$results$table$addRow(i, values = list(
-                    patient_status = "Number of patients",
-                    Detoriated = frequency_df$no_of_patients[1 + i],
-                    Improved = frequency_df$sno_of_patients[2 + i],
-                    Recovered = frequency_df$no_of_patients[3 + i],
-                    Unchanged = frequency_df$no_of_patients[4 + i]
+            if(isTRUE(self$options$groupingBool)) {
+                i <- 0
+                for (group in frequency_df$values_group){
+                    self$results$table$addRow(i, values = list(
+                        patient_status = group,
+                        Detoriated = frequency_df$no_of_patients[1 + i],
+                        Improved = frequency_df$sno_of_patients[2 + i],
+                        Recovered = frequency_df$no_of_patients[3 + i],
+                        Unchanged = frequency_df$no_of_patients[4 + i]
                 ))
                 i <- i + 4
+                }
+            } else {
+                self$results$table$addRow(1, values = list(
+                    patient_status = "Patient status",
+                    Detoriated = frequency_df$no_of_patients[1],
+                    Improved = frequency_df$sno_of_patients[2],
+                    Recovered = frequency_df$no_of_patients[3],
+                    Unchanged = frequency_df$no_of_patients[4]))
+            }
 
 
             print(self$results$table)
