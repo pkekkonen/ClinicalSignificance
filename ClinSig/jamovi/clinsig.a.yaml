@@ -89,5 +89,20 @@ options:
       title: Is higher better?
       type: Bool
       default: true
+      
+    - name: table
+      title: Table
+      type: Bool
+      default: false 
+      
+    - name: barplot
+      title: Bar plot
+      type: Bool
+      default: false
+      
+    - name: scatterplot
+      title: Scatter plot
+      type: Bool
+      default: true      
 
 ...

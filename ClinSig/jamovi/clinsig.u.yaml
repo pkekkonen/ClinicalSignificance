@@ -29,7 +29,7 @@ children:
             name: groupingVar
             maxItemCount: 1
             isTarget: true
-            enable: (groupingBool)
+            enable: (b)
   - type: LayoutBox
     margin: large
     stretchFactor: 1
@@ -117,3 +117,46 @@ children:
                 name: groupingBool
               - type: CheckBox
                 name: higherBetter
+  - type: CollapseBox
+    label: Plots
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        stretchFactor: 1
+        children:
+          - type: Label
+            label: ""
+            cell:
+              row: 0
+              column: 1
+            stretchFactor: 1
+            margin: large
+            style: list-inline
+            children:
+              - type: CheckBox
+                name: table
+          - type: Label
+            label: ""
+            cell:
+              row: 0
+              column: 2
+            stretchFactor: 1
+            margin: large
+            style: list-inline
+            children:
+              - type: CheckBox
+                name: barplot
+          - type: Label
+            label: ""
+            cell:
+              row: 0
+              column: 3
+            stretchFactor: 1
+            margin: large
+            style: list-inline
+            children:
+              - type: CheckBox
+                name: scatterplot

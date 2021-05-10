@@ -17,7 +17,10 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             func_std = 0,
             valueOfR = NULL,
             cutoffs = "a",
-            higherBetter = TRUE, ...) {
+            higherBetter = TRUE,
+            table = FALSE,
+            barplot = FALSE,
+            scatterplot = TRUE, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -87,6 +90,18 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "higherBetter",
                 higherBetter,
                 default=TRUE)
+            private$..table <- jmvcore::OptionBool$new(
+                "table",
+                table,
+                default=FALSE)
+            private$..barplot <- jmvcore::OptionBool$new(
+                "barplot",
+                barplot,
+                default=FALSE)
+            private$..scatterplot <- jmvcore::OptionBool$new(
+                "scatterplot",
+                scatterplot,
+                default=TRUE)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
@@ -100,6 +115,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..cutoffs)
             self$.addOption(private$..higherBetter)
+            self$.addOption(private$..table)
+            self$.addOption(private$..barplot)
+            self$.addOption(private$..scatterplot)
         }),
     active = list(
         pre = function() private$..pre$value,
@@ -113,7 +131,10 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         func_std = function() private$..func_std$value,
         valueOfR = function() private$..valueOfR$value,
         cutoffs = function() private$..cutoffs$value,
-        higherBetter = function() private$..higherBetter$value),
+        higherBetter = function() private$..higherBetter$value,
+        table = function() private$..table$value,
+        barplot = function() private$..barplot$value,
+        scatterplot = function() private$..scatterplot$value),
     private = list(
         ..pre = NA,
         ..post = NA,
@@ -126,14 +147,16 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..func_std = NA,
         ..valueOfR = NA,
         ..cutoffs = NA,
-        ..higherBetter = NA)
+        ..higherBetter = NA,
+        ..table = NA,
+        ..barplot = NA,
+        ..scatterplot = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$.items[["text"]],
         table = function() private$.items[["table"]],
         plot = function() private$.items[["plot"]],
         dotplot = function() private$.items[["dotplot"]]),
@@ -144,19 +167,15 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
-            self$add(jmvcore::Preformatted$new(
-                options=options,
-                name="text",
-                title="Table - Clinical Significances"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="table",
-                title="Clinical Significance",
+                title="Patient status after treatment",
                 rows=0,
                 columns=list(
                     list(
-                        `name`="patient_status", 
-                        `title`="Patient Status:", 
+                        `name`="treatment", 
+                        `title`="Treatment", 
                         `type`="text"),
                     list(
                         `name`="Detoriated", 
@@ -173,14 +192,14 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Image$new(
                 options=options,
                 name="plot",
-                title="Descriptives Plot",
+                title="Bar plot",
                 width=400,
                 height=300,
                 renderFun=".plot"))
             self$add(jmvcore::Image$new(
                 options=options,
                 name="dotplot",
-                title="Scatter Plot",
+                title="Scatter plot",
                 width=600,
                 height=400,
                 renderFun=".dotplot"))}))
@@ -221,9 +240,11 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param valueOfR .
 #' @param cutoffs .
 #' @param higherBetter .
+#' @param table .
+#' @param barplot .
+#' @param scatterplot .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
@@ -249,7 +270,10 @@ clinsig <- function(
     func_std = 0,
     valueOfR,
     cutoffs = "a",
-    higherBetter = TRUE) {
+    higherBetter = TRUE,
+    table = FALSE,
+    barplot = FALSE,
+    scatterplot = TRUE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -277,7 +301,10 @@ clinsig <- function(
         func_std = func_std,
         valueOfR = valueOfR,
         cutoffs = cutoffs,
-        higherBetter = higherBetter)
+        higherBetter = higherBetter,
+        table = table,
+        barplot = barplot,
+        scatterplot = scatterplot)
 
     analysis <- clinsigClass$new(
         options = options,

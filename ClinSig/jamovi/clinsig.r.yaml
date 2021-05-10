@@ -4,17 +4,14 @@ title: Clinical Significance
 jrs:   '1.1'
 
 items:
-    - name: text
-      title: Table - Clinical Significances
-      type: Preformatted
 
     - name:  table
-      title: Clinical Significance
+      title: Patient status after treatment
       type:  Table
       rows: 0
       columns:
-        - name: patient_status
-          title: "Patient Status:"
+        - name: treatment
+          title: Treatment
           type: text
         - name: Detoriated
           type: number
@@ -27,14 +24,14 @@ items:
 
 
     - name: plot
-      title: Descriptives Plot
+      title: Bar plot
       type: Image
       width:  400
       height: 300
       renderFun: .plot
 
     - name: dotplot
-      title: Scatter Plot
+      title: Scatter plot
       type: Image
       width:  600
       height: 400

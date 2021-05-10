@@ -1,5 +1,4 @@
 library(ggplot2) # For plotting
-library("gridExtra")
 
 # This file is a generated template, your changes will not be overwritten
 
@@ -61,7 +60,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # Calculation for RCI
             r_value <- self$options$valueOfR
-            # std_for_chosen_cutoff_point <- sd(values_pre) # OBS! SHOULD BE SD OF THE DECIDED CUTOFF POINT. SO RIGHT NOW ONLY APPLICEABLE IF CUTOFF POINT A IS USED
             standard_error_of_measurement <- std_pre*sqrt(1-r_value)
             s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
             
@@ -89,8 +87,14 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, values_group = values_group, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point, interception_point_minus = interception_point_minus) # Dataframe consisting of pre and postvalues
             colnames(df_dotplot) <- c("values_pre", "values_post", "values_group ", "patient_status", "result_abc", "interception_point", "interception_point_minus")
             
-            image_dot <- self$results$dotplot
-            image_dot$setState(df_dotplot)
+            if(self$options$scatterplot) {
+                image_dot <- self$results$dotplot
+                image_dot$setState(df_dotplot)
+                
+            } else {
+                self$results$dotplot$setVisible(FALSE)
+            }
+            
             
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                        BAR PLOT                                                         #
@@ -103,25 +107,29 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             frequency_df <- as.data.frame(table(df$patient_status, df$values_group)) # Frequency dataframe of patient treatments outcomes
             colnames(frequency_df) <- c("patient_status", "values_group", "no_of_patients")
             
-            image <- self$results$plot
-            image$setState(frequency_df)
+            if(self$options$barplot) {
+                image <- self$results$plot
+                image$setState(frequency_df)
+                
+            } else {
+                self$results$plot$setVisible(FALSE)
+            }
             
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             
-            tabble_zero <-table(factor(df$patient_status,
+            table_zero <-table(factor(df$patient_status,
                                        levels = c("Detoriated",  "Improved", "Recovered", "Unchanged")),
                                 factor(df$values_group))
-            tabble <- self$results$text$setContent(tabble_zero)
             
-            frequency_df_zero <- as.data.frame(tabble_zero)
+            frequency_df_zero <- as.data.frame(table_zero)
             colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
             
             i <- 0
             for (group in unique(frequency_df$values_group)){
                 self$results$table$addRow(group, values = list(
-                    patient_status = group, #Yeah, because that makes sense. change in clinsig.r.yaml TODO:
+                    treatment = group, 
                     Detoriated = frequency_df_zero$no_of_patients[1 + i],
                     Improved = frequency_df_zero$no_of_patients[2 + i],
                     Recovered = frequency_df_zero$no_of_patients[3 + i],
@@ -130,8 +138,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 i <- i + 4
             }
             
-            print(self$results$table)
-            print(self$results$text)
+            if(self$options$table) {
+                print(self$results$table)
+            } else {
+                self$results$table$setVisible(FALSE)
+            }
             
         },
         .plot=function(image, ...) {
@@ -143,6 +154,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             TRUE
         },
         .dotplot=function(image_dot, ...) {
+            
             plotData <- image_dot$state
             result_abc <- image_dot$state$result_abc
             interception_point <- image_dot$state$interception_point
@@ -160,7 +172,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
                 available_filling_shapes <- c(21,22,23,24,25)
                 used_filling_shapes <- available_filling_shapes[1:length(groups)]
-
+                
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
                     geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                     geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
@@ -189,6 +201,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             print(dot_plot)
             
             TRUE
+            
         }
     )
 )
