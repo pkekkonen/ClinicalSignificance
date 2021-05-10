@@ -78,7 +78,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             }
 
-            if(self$options$groupingBool) { # Check if grouping variable
+            if(!is.null(self$options$groupingVar)) { # Check if grouping variable
                 col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the post column
                 values_group <- self$data[,col_index_group] #get the values of post
             } else {
@@ -173,7 +173,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             patient_status <-plotData$patient_status
             groups <- unique(plotData$values_group)
 
-            if(length(groups) > 5 && self$options$groupingBool) {  # Show error message if more than five different treatments
+            if(length(groups) > 5 & !(is.null(self$options$groupingVar))) {  # Show error message if more than five different treatments
                 scatter_plot <-  ggplot() +
                     theme_void() +
                     geom_text(aes(0,0,label="Can only display a maximum of five different treatments at once."), color="red", size=5) +

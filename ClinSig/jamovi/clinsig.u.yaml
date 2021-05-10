@@ -114,8 +114,6 @@ children:
             label: Options
             children:
               - type: CheckBox
-                name: groupingBool
-              - type: CheckBox
                 name: higherBetter
   - type: CollapseBox
     label: Plots

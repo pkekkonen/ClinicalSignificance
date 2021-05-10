@@ -9,7 +9,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             pre = NULL,
             post = NULL,
             groupingVar = NULL,
-            groupingBool = FALSE,
             dysNorms = "baselineValues",
             dys_mean = 0,
             dys_std = 0,
@@ -46,10 +45,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "continuous",
                     "nominal",
                     "ordinal"))
-            private$..groupingBool <- jmvcore::OptionBool$new(
-                "groupingBool",
-                groupingBool,
-                default=FALSE)
             private$..dysNorms <- jmvcore::OptionList$new(
                 "dysNorms",
                 dysNorms,
@@ -106,7 +101,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
             self$.addOption(private$..groupingVar)
-            self$.addOption(private$..groupingBool)
             self$.addOption(private$..dysNorms)
             self$.addOption(private$..dys_mean)
             self$.addOption(private$..dys_std)
@@ -123,7 +117,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pre = function() private$..pre$value,
         post = function() private$..post$value,
         groupingVar = function() private$..groupingVar$value,
-        groupingBool = function() private$..groupingBool$value,
         dysNorms = function() private$..dysNorms$value,
         dys_mean = function() private$..dys_mean$value,
         dys_std = function() private$..dys_std$value,
@@ -139,7 +132,6 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..pre = NA,
         ..post = NA,
         ..groupingVar = NA,
-        ..groupingBool = NA,
         ..dysNorms = NA,
         ..dys_mean = NA,
         ..dys_std = NA,
@@ -231,7 +223,6 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param pre .
 #' @param post .
 #' @param groupingVar .
-#' @param groupingBool .
 #' @param dysNorms .
 #' @param dys_mean .
 #' @param dys_std .
@@ -262,7 +253,6 @@ clinsig <- function(
     pre,
     post,
     groupingVar = NULL,
-    groupingBool = FALSE,
     dysNorms = "baselineValues",
     dys_mean = 0,
     dys_std = 0,
@@ -293,7 +283,6 @@ clinsig <- function(
         pre = pre,
         post = post,
         groupingVar = groupingVar,
-        groupingBool = groupingBool,
         dysNorms = dysNorms,
         dys_mean = dys_mean,
         dys_std = dys_std,

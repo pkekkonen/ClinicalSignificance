@@ -30,12 +30,6 @@ options:
         - nominal
         - ordinal
 
-    - name: groupingBool
-      title: Grouping?
-      type: Bool
-      default: false
-
-      
     - name: dysNorms
       title: Dysfunctional norms
       type: List
@@ -45,28 +39,28 @@ options:
         - name: manualValues
           title: "Manual values"
       default: baselineValues
-            
+
     - name: dys_mean
       title: "Mean:"
       type: Number
       default: 0
-          
+
     - name: dys_std
       title: "Std dev:"
       type: Number
       default: 0
-      
+
     - name: func_mean
       title: "Mean:"
       type: Number
       default: 0
-          
+
     - name: func_std
       title: "Std dev:"
       type: Number
       default: 0
 
-    
+
     - name: valueOfR
       title: "Value:"
       type: Number
@@ -84,25 +78,25 @@ options:
         - title: Cutoff point C
           name:  c
       default: a
-      
+
     - name: higherBetter
       title: Is higher better?
       type: Bool
       default: true
-      
+
     - name: table
       title: Table
       type: Bool
-      default: false 
-      
+      default: false
+
     - name: barplot
       title: Bar plot
       type: Bool
       default: false
-      
+
     - name: scatterplot
       title: Scatter plot
       type: Bool
-      default: true      
+      default: true
 
 ...
