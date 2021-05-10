@@ -113,38 +113,31 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-            tabble <- self$results$text$setContent(frequency_df)
+            tabble_zero <-table(factor(df$patient_status,
+                                       levels = c("Detoriated",  "Improved", "Recovered", "Unchanged")),
+                                factor(df$values_group))
+            tabble <- self$results$text$setContent(tabble_zero)
 
-            if(isTRUE(self$options$groupingBool)) {
-                i <- 0
-                for (group in frequency_df$values_group){
-                    self$results$table$addRow(i, values = list(
-                        patient_status = group,
-                        Detoriated = frequency_df$no_of_patients[1 + i],
-                        Improved = frequency_df$sno_of_patients[2 + i],
-                        Recovered = frequency_df$no_of_patients[3 + i],
-                        Unchanged = frequency_df$no_of_patients[4 + i]
+            frequency_df_zero <- as.data.frame(tabble_zero)
+            colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
+
+
+            i <- 0
+                for (group in unique(frequency_df$values_group)){
+                    self$results$table$addRow(group, values = list(
+                        patient_status = group, #Yeah, because that makes sense. change in clinsig.r.yaml TODO:
+                        Detoriated = frequency_df_zero$no_of_patients[1 + i],
+                        Improved = frequency_df_zero$no_of_patients[2 + i],
+                        Recovered = frequency_df_zero$no_of_patients[3 + i],
+                        Unchanged = frequency_df_zero$no_of_patients[4 + i]
                 ))
-                i <- i + 4
-                }
-            } else {
-                self$results$table$addRow(1, values = list(
-                    patient_status = "Patient status",
-                    Detoriated = frequency_df$no_of_patients[1],
-                    Improved = frequency_df$sno_of_patients[2],
-                    Recovered = frequency_df$no_of_patients[3],
-                    Unchanged = frequency_df$no_of_patients[4]))
+                    i <- i + 4
             }
 
 
             print(self$results$table)
+            print(self$results$text)
 
-        },
-        .text=function(tabble, ...) {
-            plotData <- tabble$content
-            text <- plotData
-            print(text)
-            TRUE
         },
         .plot=function(image, ...) {
             plotData <- image$state
