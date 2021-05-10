@@ -8,15 +8,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     inherit = clinsigBase,
     private = list(
         .run = function() {
-            # formula <- paste(self$options$pre, '~', self$options$post)
-            # formula <- as.formula(formula)
-            # means  <- aggregate(formula, self$data, mean)[,2]
-
+            
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            #                                             MEAN AND STANDARD DEVIATION                                                 #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            
             col_index_pre <- grep(self$options$pre, colnames(self$data)) #get the index of the pre column
             values_pre <- self$data[,col_index_pre] #get the values of pre
             col_index_post <- grep(self$options$post, colnames(self$data)) #get the index of the post column
             values_post <- self$data[,col_index_post] #get the values of post
-
+            
             if(self$options$dysNorms == "Manual values") {
                 m_pre <- self$options$dys_mean
                 std_pre <- self$options$dys_std
@@ -24,8 +25,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 m_pre <- mean(values_pre) #get the mean of pre values
                 std_pre <- sd(values_pre) # get the standard deviation of pre values
             }
-
-
+            
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            #                                                 CUTOFF POINTS                                                           #
+            # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+            
             if(self$options$cutoffs == "a") { #check which cut off point
                 if(self$options$higherBetter) { # Checks if higher score indicates improvement
                     result_abc <- m_pre+2*std_pre
@@ -36,36 +40,36 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if(self$options$cutoffs == "b") { #check which cut off point
                 m_post <- self$options$func_mean
                 std_post <- self$options$func_std
-
+                
                 if(self$options$higherBetter) { # Checks if higher score indicates improvement
                     result_abc <- m_post-2*std_post
                 } else {
                     result_abc <- m_post+2*std_post
                 }
-
+                
             }
             if(self$options$cutoffs == "c") { #check which cut off point
                 m_post <- self$options$func_mean
                 std_post <- self$options$func_std
                 result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
             }
-
-
+            
+            
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                  RCI CALCULATION                                                        #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+            
             # Calculation for RCI
             r_value <- self$options$valueOfR
             # std_for_chosen_cutoff_point <- sd(values_pre) # OBS! SHOULD BE SD OF THE DECIDED CUTOFF POINT. SO RIGHT NOW ONLY APPLICEABLE IF CUTOFF POINT A IS USED
             standard_error_of_measurement <- std_pre*sqrt(1-r_value)
             s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
-
+            
             # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
             interception_point <- s_diff*1.96
             interception_point_minus <- interception_point - (interception_point * 2)
-
-
+            
+            
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                             PATIENT STATUS CALCULATION                                                  #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -74,70 +78,61 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
             }
-
-            # Check if grouping variable
-            if(isTRUE(self$options$groupingBool)) {
+            
+            if(self$options$groupingBool) { # Check if grouping variable
                 col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the post column
                 values_group <- self$data[,col_index_group] #get the values of post
             } else {
                 values_group <- rep(1, length(values_pre))
             }
-
+            
             df_dotplot <- data.frame(values_pre = values_pre, values_post = values_post, values_group = values_group, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point, interception_point_minus = interception_point_minus) # Dataframe consisting of pre and postvalues
             colnames(df_dotplot) <- c("values_pre", "values_post", "values_group ", "patient_status", "result_abc", "interception_point", "interception_point_minus")
-
+            
             image_dot <- self$results$dotplot
             image_dot$setState(df_dotplot)
-
-
-            # image_dot$setState(list(df_dotplot, result interception_point))
-
-
+            
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                        BAR PLOT                                                         #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+            
             score <- c(values_pre) # Patients scores
-
+            
             df <- data.frame(patient_status = patient_status, score = score, values_group = values_group) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
-
+            
             frequency_df <- as.data.frame(table(df$patient_status, df$values_group)) # Frequency dataframe of patient treatments outcomes
             colnames(frequency_df) <- c("patient_status", "values_group", "no_of_patients")
-
-
+            
             image <- self$results$plot
             image$setState(frequency_df)
-
-
+            
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #                                                        TABLE                                                            #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+            
             tabble_zero <-table(factor(df$patient_status,
                                        levels = c("Detoriated",  "Improved", "Recovered", "Unchanged")),
                                 factor(df$values_group))
             tabble <- self$results$text$setContent(tabble_zero)
-
+            
             frequency_df_zero <- as.data.frame(tabble_zero)
             colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
-
-
+            
             i <- 0
-                for (group in unique(frequency_df$values_group)){
-                    self$results$table$addRow(group, values = list(
-                        patient_status = group, #Yeah, because that makes sense. change in clinsig.r.yaml TODO:
-                        Detoriated = frequency_df_zero$no_of_patients[1 + i],
-                        Improved = frequency_df_zero$no_of_patients[2 + i],
-                        Recovered = frequency_df_zero$no_of_patients[3 + i],
-                        Unchanged = frequency_df_zero$no_of_patients[4 + i]
+            for (group in unique(frequency_df$values_group)){
+                self$results$table$addRow(group, values = list(
+                    patient_status = group, #Yeah, because that makes sense. change in clinsig.r.yaml TODO:
+                    Detoriated = frequency_df_zero$no_of_patients[1 + i],
+                    Improved = frequency_df_zero$no_of_patients[2 + i],
+                    Recovered = frequency_df_zero$no_of_patients[3 + i],
+                    Unchanged = frequency_df_zero$no_of_patients[4 + i]
                 ))
-                    i <- i + 4
+                i <- i + 4
             }
-
-
+            
             print(self$results$table)
             print(self$results$text)
-
+            
         },
         .plot=function(image, ...) {
             plotData <- image$state
@@ -155,27 +150,27 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             values_group <- image_dot$state$values_group
             patient_status <-plotData$patient_status
             groups <- unique(plotData$values_group)
-
-            available_filling_shapes <- c(21,22,23,24,25)
-            used_filling_shapes <- available_filling_shapes[1:length(groups)]
-
-            filling_shapes <- setNames(used_filling_shapes, groups)
+            
+            if(length(groups) > 5 && self$options$groupingBool) {  # Show error message if more than five different treatments
+                dot_plot <-  ggplot() +
+                    theme_void() +
+                    geom_text(aes(0,0,label="Can only display a maximum of five different treatments at once."), color="red", size=5) +
+                    xlab(NULL) 
+            } else {
+                
+                available_filling_shapes <- c(21,22,23,24,25)
+                used_filling_shapes <- available_filling_shapes[1:length(groups)]
 
                 dot_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
                     geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                     geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-
                     geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
-
                     geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-
                     scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-
-                    #   scale_linetype_discrete(name = "Status", labels = c("No change", "RCI boundary"))
                     scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                     scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                     theme(legend.position = "right")
-
+                
                 # Check whether treatment should be with as a variable
                 if (length(groups) == 1) {
                     dot_plot <- dot_plot +
@@ -189,16 +184,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         guides(shape = guide_legend(override.aes = list(fill = "black")))+
                         labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")
                 }
-
-
-
-            # plot1 <- qplot(1)
-            # plot2 <- qplot(1)
-            # grid.arrange(plot1, plot2, ncol=2)
-
+                
+            }
             print(dot_plot)
+            
             TRUE
         }
-        )
+    )
 )
 
