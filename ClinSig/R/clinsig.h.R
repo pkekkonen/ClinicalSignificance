@@ -158,8 +158,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         table = function() private$.items[["table"]],
-        plot = function() private$.items[["plot"]],
-        dotplot = function() private$.items[["dotplot"]]),
+        barplot = function() private$.items[["barplot"]],
+        scatterplot = function() private$.items[["scatterplot"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -191,18 +191,18 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="plot",
+                name="barplot",
                 title="Bar plot",
                 width=400,
                 height=300,
-                renderFun=".plot"))
+                renderFun=".barplot"))
             self$add(jmvcore::Image$new(
                 options=options,
-                name="dotplot",
+                name="scatterplot",
                 title="Scatter plot",
                 width=600,
                 height=400,
-                renderFun=".dotplot"))}))
+                renderFun=".scatterplot"))}))
 
 clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigBase",
@@ -246,8 +246,8 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$plot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$dotplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$barplot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$scatterplot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

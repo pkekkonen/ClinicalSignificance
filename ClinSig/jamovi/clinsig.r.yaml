@@ -23,19 +23,19 @@ items:
           type: number
 
 
-    - name: plot
+    - name: barplot
       title: Bar plot
       type: Image
       width:  400
       height: 300
-      renderFun: .plot
+      renderFun: .barplot
 
-    - name: dotplot
+    - name: scatterplot
       title: Scatter plot
       type: Image
       width:  600
       height: 400
-      renderFun: .dotplot
+      renderFun: .scatterplot
 
 
 ...
