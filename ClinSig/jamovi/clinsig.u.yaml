@@ -59,7 +59,7 @@ children:
                     format: number
                     enable: (manual)
                   - type: TextBox
-                    name: dys_std
+                    name: dys_sd
                     format: number
                     enable: (manual)
           - type: Label
@@ -70,7 +70,7 @@ children:
                 format: number
                 enable: (b || c)
               - type: TextBox
-                name: func_std
+                name: func_sd
                 format: number
                 enable: (b || c)
       - type: LayoutBox

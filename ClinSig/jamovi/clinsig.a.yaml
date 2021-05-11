@@ -45,7 +45,7 @@ options:
       type: Number
       default: 0
 
-    - name: dys_std
+    - name: dys_sd
       title: "Std dev:"
       type: Number
       default: 0
@@ -55,7 +55,7 @@ options:
       type: Number
       default: 0
 
-    - name: func_std
+    - name: func_sd
       title: "Std dev:"
       type: Number
       default: 0

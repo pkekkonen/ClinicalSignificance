@@ -1,7 +1,5 @@
 library(ggplot2) # For plotting
 
-# This file is a generated template, your changes will not be overwritten
-
 clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "clinsigClass",
     inherit = clinsigBase,
@@ -10,20 +8,21 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if ((!is.null(self$options$pre)) & (!is.null(self$options$post))) {
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                #                                             MEAN AND STANDARD DEVIATION                                                 #
+                #                                            DATA EXTRACTION AND PREPERATION                                              #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+                
+                # Extract pre and post values
                 col_index_pre <- grep(self$options$pre, colnames(self$data)) #get the index of the pre column
                 values_pre <- self$data[,col_index_pre] #get the values of pre
                 col_index_post <- grep(self$options$post, colnames(self$data)) #get the index of the post column
                 values_post <- self$data[,col_index_post] #get the values of post
 
                 # Extract groups
-                if(!is.null(self$options$groupingVar)) { # Check if grouping variable
+                if(!is.null(self$options$groupingVar)) { # Check if grouping variable is present
                     col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the groups column
                     values_group <- self$data[,col_index_group] #get the values of groups
                 } else {
-                    values_group <- rep(1, length(values_pre))
+                    values_group <- rep(1, length(values_pre)) # If grouping variable is not present, fill column with 1's
                 }
 
                 # Delete rows that has at least one NA
@@ -33,42 +32,48 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 values_post <- dataframe_without_na$values_post
                 values_pre <- dataframe_without_na$values_pre
                 values_group <- dataframe_without_na$values_group
-
+                
+                # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+                #                                             MEAN AND STANDARD DEVIATION                                                 #
+                # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+                
                 if(self$options$dysNorms == "Manual values") {
-                    m_pre <- self$options$dys_mean
-                    std_pre <- self$options$dys_std
+                    m_pre <- self$options$dys_mean # Get the inputted mean
+                    sd_pre <- self$options$dys_sd # Get the inputted standard deviation
                 } else {
-                    m_pre <- mean(values_pre) #get the mean of pre values
-                    std_pre <- sd(values_pre) # get the standard deviation of pre values
+                    m_pre <- mean(values_pre) # Calculate the mean of pre values
+                    sd_pre <- sd(values_pre) # Calculate the standard deviation of pre values
                 }
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                                 CUTOFF POINTS                                                           #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-                if(self$options$cutoffs == "a") { #check which cut off point
+                if(self$options$cutoffs == "a") { 
                     if(self$options$higherBetter) { # Checks if higher score indicates improvement
-                        result_abc <- m_pre+2*std_pre
+                        result_abc <- m_pre+2*sd_pre
                     } else {
-                        result_abc <- m_pre-2*std_pre
+                        result_abc <- m_pre-2*sd_pre
                     }
                 }
-                if(self$options$cutoffs == "b") { #check which cut off point
+                
+                if(self$options$cutoffs == "b") { 
                     m_post <- self$options$func_mean
-                    std_post <- self$options$func_std
+                    sd_post <- self$options$func_sd
 
                     if(self$options$higherBetter) { # Checks if higher score indicates improvement
-                        result_abc <- m_post-2*std_post
+                        result_abc <- m_post-2*sd_post
                     } else {
-                        result_abc <- m_post+2*std_post
+                        result_abc <- m_post+2*sd_post
                     }
-
                 }
-                if(self$options$cutoffs == "c") { #check which cut off point
+                
+                if(self$options$cutoffs == "c") {
                     m_post <- self$options$func_mean
-                    std_post <- self$options$func_std
-                    result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
+                    sd_post <- self$options$func_sd
+                    result_abc <- (sd_post * m_pre + sd_pre * m_post)/(sd_post + sd_pre)
                 }
+                
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                                  RCI CALCULATION                                                        #
@@ -76,7 +81,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 # Calculation for RCI
                 r_value <- self$options$valueOfR
-                standard_error_of_measurement <- std_pre*sqrt(1-r_value)
+                standard_error_of_measurement <- sd_pre*sqrt(1-r_value)
                 s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
 
                 # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
@@ -89,30 +94,31 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 if(self$options$higherBetter) {
-                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
+                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged"))) 
                 } else {
-                    patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged"))) # Checks whether or not patient is above cutoff-point
+                    patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged")))
                 }
 
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                #                                                 SCATTER PLOT                                                            #
+                #                                                SCATTER PLOT PREPERATION                                                 #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-                df_scatterplot <- data.frame(values_pre = values_pre, values_post = values_post, values_group = values_group, patient_status = patient_status, result_abc = result_abc, interception_point = interception_point, interception_point_minus = interception_point_minus) # Dataframe consisting of pre and postvalues
-                colnames(df_scatterplot) <- c("values_pre", "values_post", "values_group", "patient_status", "result_abc", "interception_point", "interception_point_minus")
-
+                
                 if(self$options$scatterplot) {
+                    # Create dataframe with the relevant values for plotting
+                    df_scatterplot <- data.frame(values_pre, values_post, values_group, patient_status, result_abc, interception_point, interception_point_minus) # Dataframe consisting of pre and postvalues
+                    colnames(df_scatterplot) <- c("values_pre", "values_post", "values_group", "patient_status", "result_abc", "interception_point", "interception_point_minus")
+                    
+                    # Save dataframe to image
                     image_scatter <- self$results$scatterplot
                     image_scatter$setState(df_scatterplot)
-
                 } else {
                     self$results$scatterplot$setVisible(FALSE)
                 }
 
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                #                                                        BAR PLOT                                                         #
+                #                                                   BAR PLOT PREPERATION                                                  #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 df <- data.frame(patient_status = patient_status, values_pre = values_pre, values_group = values_group) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
@@ -129,7 +135,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 }
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                #                                                        TABLE                                                            #
+                #                                              TABLE PREPERATION AND DISPLAY                                              #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 table_zero <-table(factor(df$patient_status,

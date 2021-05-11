@@ -11,9 +11,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             groupingVar = NULL,
             dysNorms = "baselineValues",
             dys_mean = 0,
-            dys_std = 0,
+            dys_sd = 0,
             func_mean = 0,
-            func_std = 0,
+            func_sd = 0,
             valueOfR = NULL,
             cutoffs = "a",
             higherBetter = TRUE,
@@ -56,17 +56,17 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "dys_mean",
                 dys_mean,
                 default=0)
-            private$..dys_std <- jmvcore::OptionNumber$new(
-                "dys_std",
-                dys_std,
+            private$..dys_sd <- jmvcore::OptionNumber$new(
+                "dys_sd",
+                dys_sd,
                 default=0)
             private$..func_mean <- jmvcore::OptionNumber$new(
                 "func_mean",
                 func_mean,
                 default=0)
-            private$..func_std <- jmvcore::OptionNumber$new(
-                "func_std",
-                func_std,
+            private$..func_sd <- jmvcore::OptionNumber$new(
+                "func_sd",
+                func_sd,
                 default=0)
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
@@ -103,9 +103,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..groupingVar)
             self$.addOption(private$..dysNorms)
             self$.addOption(private$..dys_mean)
-            self$.addOption(private$..dys_std)
+            self$.addOption(private$..dys_sd)
             self$.addOption(private$..func_mean)
-            self$.addOption(private$..func_std)
+            self$.addOption(private$..func_sd)
             self$.addOption(private$..valueOfR)
             self$.addOption(private$..cutoffs)
             self$.addOption(private$..higherBetter)
@@ -119,9 +119,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         groupingVar = function() private$..groupingVar$value,
         dysNorms = function() private$..dysNorms$value,
         dys_mean = function() private$..dys_mean$value,
-        dys_std = function() private$..dys_std$value,
+        dys_sd = function() private$..dys_sd$value,
         func_mean = function() private$..func_mean$value,
-        func_std = function() private$..func_std$value,
+        func_sd = function() private$..func_sd$value,
         valueOfR = function() private$..valueOfR$value,
         cutoffs = function() private$..cutoffs$value,
         higherBetter = function() private$..higherBetter$value,
@@ -134,9 +134,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..groupingVar = NA,
         ..dysNorms = NA,
         ..dys_mean = NA,
-        ..dys_std = NA,
+        ..dys_sd = NA,
         ..func_mean = NA,
-        ..func_std = NA,
+        ..func_sd = NA,
         ..valueOfR = NA,
         ..cutoffs = NA,
         ..higherBetter = NA,
@@ -225,9 +225,9 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param groupingVar .
 #' @param dysNorms .
 #' @param dys_mean .
-#' @param dys_std .
+#' @param dys_sd .
 #' @param func_mean .
-#' @param func_std .
+#' @param func_sd .
 #' @param valueOfR .
 #' @param cutoffs .
 #' @param higherBetter .
@@ -255,9 +255,9 @@ clinsig <- function(
     groupingVar = NULL,
     dysNorms = "baselineValues",
     dys_mean = 0,
-    dys_std = 0,
+    dys_sd = 0,
     func_mean = 0,
-    func_std = 0,
+    func_sd = 0,
     valueOfR,
     cutoffs = "a",
     higherBetter = TRUE,
@@ -285,9 +285,9 @@ clinsig <- function(
         groupingVar = groupingVar,
         dysNorms = dysNorms,
         dys_mean = dys_mean,
-        dys_std = dys_std,
+        dys_sd = dys_sd,
         func_mean = func_mean,
-        func_std = func_std,
+        func_sd = func_sd,
         valueOfR = valueOfR,
         cutoffs = cutoffs,
         higherBetter = higherBetter,
