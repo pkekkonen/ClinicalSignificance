@@ -4,7 +4,10 @@ title: Clinical Significance
 jrs:   '1.1'
 
 items:
-
+    - name: text
+      title: Table - Clinical Significances
+      type: Preformatted
+      
     - name:  table
       title: Patient status after treatment
       type:  Table
