@@ -20,8 +20,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 # Extract groups
                 if(!is.null(self$options$groupingVar)) { # Check if grouping variable
-                    col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the post column
-                    values_group <- self$data[,col_index_group] #get the values of post
+                    col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the groups column
+                    values_group <- self$data[,col_index_group] #get the values of groups
                 } else {
                     values_group <- rep(1, length(values_pre))
                 }
@@ -69,8 +69,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     std_post <- self$options$func_std
                     result_abc <- (std_post * m_pre + std_pre * m_post)/(std_post + std_pre)
                 }
-
-                self$results$text$setContent(result_abc )
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                                  RCI CALCULATION                                                        #
@@ -172,7 +170,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .barplot=function(image, ...) {
             plotData <- image$state
             if (!is.null(plotData)) {
-                barplot <- ggplot(data=plotData, aes(x=factor(values_group, level=c("Recovered", "Improved", "Unchanged", "Detoriated")), y=no_of_patients, fill = patient_status)) +
+                barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
                     geom_bar(stat="identity", position = position_dodge()) + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
                     labs(x = "Treatments", y = "Number of patients", fill = "Patient status") # Barplot
                 print(barplot)
