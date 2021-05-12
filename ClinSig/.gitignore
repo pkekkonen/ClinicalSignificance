@@ -45,9 +45,6 @@ renv/staging/
 # jamovi options js
 jamovi/ui/*.options.js
 
-# packaged module
-*.jmo
-
 # build folders
 build/
 build*/

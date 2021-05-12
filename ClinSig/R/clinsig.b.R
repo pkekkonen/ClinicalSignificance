@@ -10,7 +10,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                            DATA EXTRACTION AND PREPERATION                                              #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                
+
                 # Extract pre and post values
                 col_index_pre <- grep(self$options$pre, colnames(self$data)) #get the index of the pre column
                 values_pre <- self$data[,col_index_pre] #get the values of pre
@@ -32,11 +32,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 values_post <- dataframe_without_na$values_post
                 values_pre <- dataframe_without_na$values_pre
                 values_group <- dataframe_without_na$values_group
-                
+
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                             MEAN AND STANDARD DEVIATION                                                 #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                
+
                 if(self$options$dysNorms == "manualValues") {
                     m_pre <- self$options$dys_mean # Get the inputted mean
                     sd_pre <- self$options$dys_sd # Get the inputted standard deviation
@@ -49,15 +49,15 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 #                                                 CUTOFF POINTS                                                           #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-                if(self$options$cutoffs == "a") { 
+                if(self$options$cutoffs == "a") {
                     if(self$options$higherBetter) { # Checks if higher score indicates improvement
                         result_abc <- m_pre+2*sd_pre
                     } else {
                         result_abc <- m_pre-2*sd_pre
                     }
                 }
-                
-                if(self$options$cutoffs == "b") { 
+
+                if(self$options$cutoffs == "b") {
                     m_post <- self$options$func_mean
                     sd_post <- self$options$func_sd
 
@@ -67,13 +67,13 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         result_abc <- m_post+2*sd_post
                     }
                 }
-                
+
                 if(self$options$cutoffs == "c") {
                     m_post <- self$options$func_mean
                     sd_post <- self$options$func_sd
                     result_abc <- (sd_post * m_pre + sd_pre * m_post)/(sd_post + sd_pre)
                 }
-                
+
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                                  RCI CALCULATION                                                        #
@@ -94,7 +94,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 if(self$options$higherBetter) {
-                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged"))) 
+                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged")))
                 } else {
                     patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged")))
                 }
@@ -103,12 +103,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                                SCATTER PLOT PREPERATION                                                 #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-                
+
                 if(self$options$scatterplot) {
                     # Create dataframe with the relevant values for plotting
                     df_scatterplot <- data.frame(values_pre, values_post, values_group, patient_status, result_abc, interception_point, interception_point_minus) # Dataframe consisting of pre and postvalues
                     colnames(df_scatterplot) <- c("values_pre", "values_post", "values_group", "patient_status", "result_abc", "interception_point", "interception_point_minus")
-                    
+
                     # Save dataframe to image
                     image_scatter <- self$results$scatterplot
                     image_scatter$setState(df_scatterplot)
@@ -167,7 +167,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             } else {
                 self$results$table$setVisible(FALSE)
                 return;
-            }},
+            }
+            jmvtools::install()
+            },
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
         #                                                       RENDERING                                                         #
