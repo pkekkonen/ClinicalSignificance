@@ -37,7 +37,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 #                                             MEAN AND STANDARD DEVIATION                                                 #
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 
-                if(self$options$dysNorms == "Manual values") {
+                if(self$options$dysNorms == "manualValues") {
                     m_pre <- self$options$dys_mean # Get the inputted mean
                     sd_pre <- self$options$dys_sd # Get the inputted standard deviation
                 } else {
