@@ -31,20 +31,20 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "pre",
                 pre,
                 suggested=list(
-                    "continuous"))
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..post <- jmvcore::OptionVariable$new(
                 "post",
                 post,
                 suggested=list(
-                    "continuous"))
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..groupingVar <- jmvcore::OptionVariable$new(
                 "groupingVar",
                 groupingVar,
-                default=NULL,
-                suggested=list(
-                    "continuous",
-                    "nominal",
-                    "ordinal"))
+                default=NULL)
             private$..dysNorms <- jmvcore::OptionList$new(
                 "dysNorms",
                 dysNorms,

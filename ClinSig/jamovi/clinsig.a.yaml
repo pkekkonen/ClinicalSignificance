@@ -14,21 +14,21 @@ options:
       type: Variable
       suggested:
         - continuous
+      permitted:
+        - numeric
 
     - name: post
       title: Post treatment scores
       type: Variable
       suggested:
         - continuous
+      permitted:
+        - numeric
 
     - name: groupingVar
       title: Grouping variable
       type: Variable
       default: NULL
-      suggested:
-        - continuous
-        - nominal
-        - ordinal
 
     - name: dysNorms
       title: Dysfunctional norms
