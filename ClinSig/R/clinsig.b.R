@@ -168,7 +168,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$table$setVisible(FALSE)
                 return;
             }
-            jmvtools::install()
             },
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
