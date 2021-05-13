@@ -22,7 +22,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the groups column
                     values_group <- self$data[,col_index_group] #get the values of groups
                 } else {
-                    values_group <- rep(1, length(values_pre)) # If grouping variable is not present, fill column with 1's
+                    values_group <- rep("", length(values_pre)) # If grouping variable is not present, fill column with nothings's
                 }
 
                 # Delete rows that has at least one NA
