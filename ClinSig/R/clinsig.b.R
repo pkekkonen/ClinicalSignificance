@@ -147,7 +147,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
 
                 i <- 0
-                
+
                 if(self$options$showPercentage) {
                     for (group in unique(frequency_df$values_group)){
                         
@@ -158,10 +158,21 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
                         total <- detoriated + improved + recovered + unchanged 
                         
-                        self$results$table$columns$DetoriatedPercent$setVisible(TRUE)
-                        self$results$table$columns$ImprovedPercent$setVisible(TRUE)
-                        self$results$table$columns$RecoveredPercent$setVisible(TRUE)
-                        self$results$table$columns$UnchangedPercent$setVisible(TRUE)
+                        j <- 1
+                        for (col in self$results$table$columns) {
+                            
+                            if(j>1 && j %% 2 == 1) {
+                                col$setVisible(TRUE)
+                            } else {
+                                col$setSuperTitle(col$name)
+                                if(j > 1) 
+                                    col$setTitle("n")
+                                else 
+                                    col$setTitle("")
+                            }
+                            
+                            j <- j+1
+                        }
                         
                         detoriated_percent <- sprintf("%s", format(round(detoriated/total*100, 2), nsmall = 2))
                         improved_percent <- sprintf("%s", format(round(improved/total*100, 2), nsmall = 2))
@@ -169,7 +180,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         unchanged_percent <- sprintf("%s", format(round(unchanged/total*100, 2), nsmall = 2))
                         
                         self$results$table$addRow(group, values = list(
-                            grouping = group,
+                            Grouping = group,
                             Detoriated = detoriated,
                             Improved = improved,
                             Recovered = recovered,
@@ -186,13 +197,21 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 } else {
                     for (group in unique(frequency_df$values_group)){
                         
-                        self$results$table$columns$DetoriatedPercent$setVisible(FALSE)
-                        self$results$table$columns$ImprovedPercent$setVisible(FALSE)
-                        self$results$table$columns$RecoveredPercent$setVisible(FALSE)
-                        self$results$table$columns$UnchangedPercent$setVisible(FALSE)
+                        j <- 1
+                        for (col in self$results$table$columns) {
+                            
+                            if(j>1 && j %% 2 == 1) {
+                                col$setVisible(FALSE)
+                            } else {
+                                col$setTitle(col$name)
+                                col$setSuperTitle(NULL)
+                            }
+                            j <- j+1
+                            
+                        }
                         
                         self$results$table$addRow(group, values = list(
-                            grouping = group,
+                            Grouping = group,
                             Detoriated = frequency_df_zero$no_of_patients[1 + i],
                             Improved = frequency_df_zero$no_of_patients[2 + i],
                             Recovered = frequency_df_zero$no_of_patients[3 + i],

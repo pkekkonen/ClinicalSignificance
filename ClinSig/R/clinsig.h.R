@@ -158,6 +158,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "clinsigResults",
     inherit = jmvcore::Group,
     active = list(
+        text = function() private$.items[["text"]],
         table = function() private$.items[["table"]],
         barplot = function() private$.items[["barplot"]],
         scatterplot = function() private$.items[["scatterplot"]]),
@@ -168,6 +169,9 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Clinical Significance")
+            self$add(jmvcore::Preformatted$new(
+                options=options,
+                name="text"))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="table",
@@ -175,14 +179,14 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=0,
                 columns=list(
                     list(
-                        `name`="grouping", 
+                        `name`="Grouping", 
                         `superTitle`="Grouping", 
                         `title`="", 
                         `type`="text"),
                     list(
                         `name`="Detoriated", 
                         `superTitle`="Detoriated", 
-                        `title`="n", 
+                        `title`="Detoriated", 
                         `type`="number"),
                     list(
                         `name`="DetoriatedPercent", 
@@ -193,7 +197,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="Improved", 
                         `superTitle`="Improved", 
-                        `title`="n", 
+                        `title`="Improved", 
                         `type`="number"),
                     list(
                         `name`="ImprovedPercent", 
@@ -204,7 +208,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="Recovered", 
                         `superTitle`="Recovered", 
-                        `title`="n", 
+                        `title`="Recovered", 
                         `type`="number"),
                     list(
                         `name`="RecoveredPercent", 
@@ -215,7 +219,7 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="Unchanged", 
                         `superTitle`="Unchanged", 
-                        `title`="n", 
+                        `title`="Unchanged", 
                         `type`="number"),
                     list(
                         `name`="UnchangedPercent", 
@@ -279,6 +283,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param scatterplot .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$barplot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$scatterplot} \tab \tab \tab \tab \tab an image \cr

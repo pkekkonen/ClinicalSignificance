@@ -4,50 +4,57 @@ title: Clinical Significance
 jrs:   '1.1'
 
 items:
+    - name: text
+      type: Preformatted
+
     - name:  table
       title: Patient status after treatment
       type:  Table
       rows: 0
       columns:
-        - name: grouping
+        - name: Grouping
           superTitle: Grouping
           title: ""
           type: text
-          
+
         - name: Detoriated
           superTitle: Detoriated
-          title: n
+          title: Detoriated
           type: number
+
         - name: DetoriatedPercent
           superTitle: Detoriated
           title: "%"
           visible: false
           type: number
-          
+
         - name: Improved
           superTitle: Improved
-          title: n
+          title: Improved
           type: number
+
         - name: ImprovedPercent
           superTitle: Improved
           title: "%"
           visible: false
           type: number
-          
+
         - name: Recovered
           superTitle: Recovered
-          title: n
+          title: Recovered
           type: number
+
         - name: RecoveredPercent
           superTitle: Recovered
           title: "%"          
           visible: false
           type: number
-          
+
         - name: Unchanged
           superTitle: Unchanged
-          title: n
+          title: Unchanged
           type: number
+
         - name: UnchangedPercent
           superTitle: Unchanged
           title: "%"
