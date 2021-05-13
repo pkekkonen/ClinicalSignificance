@@ -46,7 +46,7 @@ items:
 
         - name: RecoveredPercent
           superTitle: Recovered
-          title: "%"          
+          title: "%"
           visible: false
           type: number
 

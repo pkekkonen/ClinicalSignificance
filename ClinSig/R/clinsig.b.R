@@ -141,7 +141,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table_zero <-table(factor(df$patient_status,
                                           levels = c("Detoriated",  "Improved", "Recovered", "Unchanged")),
                                    factor(df$values_group))
-                
+
 
                 frequency_df_zero <- as.data.frame(table_zero)
                 colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
@@ -150,35 +150,35 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if(self$options$showPercentage) {
                     for (group in unique(frequency_df$values_group)){
-                        
+
                         detoriated <- frequency_df_zero$no_of_patients[1 + i]
                         improved <- frequency_df_zero$no_of_patients[2 + i]
                         recovered <- frequency_df_zero$no_of_patients[3 + i]
                         unchanged <- frequency_df_zero$no_of_patients[4 + i]
-                        
-                        total <- detoriated + improved + recovered + unchanged 
-                        
+
+                        total <- detoriated + improved + recovered + unchanged
+
                         j <- 1
                         for (col in self$results$table$columns) {
-                            
+
                             if(j>1 && j %% 2 == 1) {
                                 col$setVisible(TRUE)
                             } else {
                                 col$setSuperTitle(col$name)
-                                if(j > 1) 
+                                if(j > 1)
                                     col$setTitle("n")
-                                else 
-                                    col$setTitle("")
+                                else
+                                    col$setTitle(self$options$groupingVar)
                             }
-                            
+
                             j <- j+1
                         }
-                        
+
                         detoriated_percent <- sprintf("%s", format(round(detoriated/total*100, 2), nsmall = 2))
                         improved_percent <- sprintf("%s", format(round(improved/total*100, 2), nsmall = 2))
                         recovered_percent <- sprintf("%s", format(round(recovered/total*100, 2), nsmall = 2))
                         unchanged_percent <- sprintf("%s", format(round(unchanged/total*100, 2), nsmall = 2))
-                        
+
                         self$results$table$addRow(group, values = list(
                             Grouping = group,
                             Detoriated = detoriated,
@@ -190,16 +190,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             RecoveredPercent = recovered_percent,
                             UnchangedPercent = unchanged_percent
                         ))
-                        
+
                         i <- i + 4
                     }
-                    
+
                 } else {
                     for (group in unique(frequency_df$values_group)){
-                        
+
                         j <- 1
                         for (col in self$results$table$columns) {
-                            
+
                             if(j>1 && j %% 2 == 1) {
                                 col$setVisible(FALSE)
                             } else {
@@ -207,9 +207,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 col$setSuperTitle(NULL)
                             }
                             j <- j+1
-                            
+
                         }
-                        
+
                         self$results$table$addRow(group, values = list(
                             Grouping = group,
                             Detoriated = frequency_df_zero$no_of_patients[1 + i],
@@ -217,20 +217,20 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             Recovered = frequency_df_zero$no_of_patients[3 + i],
                             Unchanged = frequency_df_zero$no_of_patients[4 + i]
                         ))
-                        
-                        
+
+
                         i <- i + 4
                     }
                 }
-                
-                
+
+
                 if(self$options$table) {
                     print(nrow(self$results$table))
                 } else {
                     self$results$table$setVisible(FALSE)
                     return;
                 }
-                
+
             } else {
                 self$results$table$setVisible(FALSE)
                 return;
@@ -246,7 +246,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(plotData)) {
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
                     geom_bar(stat="identity", position = position_dodge()) + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-                    labs(x = "Grouping", y = "Number of patients", fill = "Patient status") # Barplot
+                    labs(x = self$options$groupingVar, y = "Number of patients", fill = "Patient status") # Barplot
                 print(barplot)
                 TRUE
             } else {
@@ -300,7 +300,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                             guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Grouping")
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = self$options$groupingVar)
                     }
 
                 }
