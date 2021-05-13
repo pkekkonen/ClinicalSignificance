@@ -175,8 +175,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=0,
                 columns=list(
                     list(
-                        `name`="treatment", 
-                        `superTitle`="Treatment", 
+                        `name`="grouping", 
+                        `superTitle`="Grouping", 
                         `title`="", 
                         `type`="text"),
                     list(

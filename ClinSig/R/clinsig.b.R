@@ -123,7 +123,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 df <- data.frame(patient_status = patient_status, values_pre = values_pre, values_group = values_group) # Dataframe consisting of if a patient is above cutoff-point and the patients scores
 
-                frequency_df <- as.data.frame(table(df$patient_status, df$values_group)) # Frequency dataframe of patient treatments outcomes
+                frequency_df <- as.data.frame(table(df$patient_status, df$values_group)) # Frequency dataframe of patient status outcomes
                 colnames(frequency_df) <- c("patient_status", "values_group", "no_of_patients")
 
                 if(self$options$barplot) {
@@ -169,7 +169,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         unchanged_percent <- sprintf("%s", format(round(unchanged/total*100, 2), nsmall = 2))
                         
                         self$results$table$addRow(group, values = list(
-                            treatment = group,
+                            grouping = group,
                             Detoriated = detoriated,
                             Improved = improved,
                             Recovered = recovered,
@@ -192,7 +192,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         self$results$table$columns$UnchangedPercent$setVisible(FALSE)
                         
                         self$results$table$addRow(group, values = list(
-                            treatment = group,
+                            grouping = group,
                             Detoriated = frequency_df_zero$no_of_patients[1 + i],
                             Improved = frequency_df_zero$no_of_patients[2 + i],
                             Recovered = frequency_df_zero$no_of_patients[3 + i],
@@ -227,7 +227,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.null(plotData)) {
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
                     geom_bar(stat="identity", position = position_dodge()) + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-                    labs(x = "Treatments", y = "Number of patients", fill = "Patient status") # Barplot
+                    labs(x = "Grouping", y = "Number of patients", fill = "Patient status") # Barplot
                 print(barplot)
                 TRUE
             } else {
@@ -245,11 +245,14 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 values_group <- image_scatter$state$values_group
                 patient_status <-plotData$patient_status
                 groups <- unique(plotData$values_group)
+                max_all <- max(max(plotData$values_pre), max(plotData$values_post))
+                min_all <- min(min(plotData$values_pre), min(plotData$values_post))
 
-                if(length(groups) > 5 & !(is.null(self$options$groupingVar))) {  # Show error message if more than five different treatments
+
+                if(length(groups) > 5 & !(is.null(self$options$groupingVar))) {  # Show error message if more than five different groupings
                     scatter_plot <-  ggplot() +
                         theme_void() +
-                        geom_text(aes(0,0,label="Can only display a maximum of five different treatments at once."), color="red", size=5) +
+                        geom_text(aes(0,0,label="Can only display a maximum of five different groupings at once."), color="red", size=5) +
                         xlab(NULL)
                 } else {
 
@@ -257,6 +260,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     used_filling_shapes <- available_filling_shapes[1:length(groups)]
 
                     scatter_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
+                        coord_cartesian(xlim = c(min_all, max_all), ylim = c(min_all, max_all), expand = TRUE) +
                         geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                         geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                         geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
@@ -266,7 +270,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                         theme(legend.position = "right")
 
-                    # Check whether treatment should be with as a variable
+                    # Check whether grouping should be with as a variable
                     if (length(groups) == 1) {
                         scatter_plot <- scatter_plot +
                             geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
@@ -277,7 +281,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                             guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Treatment")
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = "Grouping")
                     }
 
                 }

@@ -9,8 +9,8 @@ items:
       type:  Table
       rows: 0
       columns:
-        - name: treatment
-          superTitle: Treatment
+        - name: grouping
+          superTitle: Grouping
           title: ""
           type: text
           
