@@ -18,6 +18,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cutoffs = "a",
             higherBetter = TRUE,
             table = TRUE,
+            showPercentage = FALSE,
             barplot = FALSE,
             scatterplot = FALSE, ...) {
 
@@ -90,6 +91,10 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "table",
                 table,
                 default=TRUE)
+            private$..showPercentage <- jmvcore::OptionBool$new(
+                "showPercentage",
+                showPercentage,
+                default=FALSE)
             private$..barplot <- jmvcore::OptionBool$new(
                 "barplot",
                 barplot,
@@ -111,6 +116,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cutoffs)
             self$.addOption(private$..higherBetter)
             self$.addOption(private$..table)
+            self$.addOption(private$..showPercentage)
             self$.addOption(private$..barplot)
             self$.addOption(private$..scatterplot)
         }),
@@ -127,6 +133,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cutoffs = function() private$..cutoffs$value,
         higherBetter = function() private$..higherBetter$value,
         table = function() private$..table$value,
+        showPercentage = function() private$..showPercentage$value,
         barplot = function() private$..barplot$value,
         scatterplot = function() private$..scatterplot$value),
     private = list(
@@ -142,6 +149,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cutoffs = NA,
         ..higherBetter = NA,
         ..table = NA,
+        ..showPercentage = NA,
         ..barplot = NA,
         ..scatterplot = NA)
 )
@@ -168,19 +176,52 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 columns=list(
                     list(
                         `name`="treatment", 
-                        `title`="Treatment", 
+                        `superTitle`="Treatment", 
+                        `title`="", 
                         `type`="text"),
                     list(
                         `name`="Detoriated", 
+                        `superTitle`="Detoriated", 
+                        `title`="n", 
+                        `type`="number"),
+                    list(
+                        `name`="DetoriatedPercent", 
+                        `superTitle`="Detoriated", 
+                        `title`="%", 
+                        `visible`=FALSE, 
                         `type`="number"),
                     list(
                         `name`="Improved", 
+                        `superTitle`="Improved", 
+                        `title`="n", 
+                        `type`="number"),
+                    list(
+                        `name`="ImprovedPercent", 
+                        `superTitle`="Improved", 
+                        `title`="%", 
+                        `visible`=FALSE, 
                         `type`="number"),
                     list(
                         `name`="Recovered", 
+                        `superTitle`="Recovered", 
+                        `title`="n", 
+                        `type`="number"),
+                    list(
+                        `name`="RecoveredPercent", 
+                        `superTitle`="Recovered", 
+                        `title`="%", 
+                        `visible`=FALSE, 
                         `type`="number"),
                     list(
                         `name`="Unchanged", 
+                        `superTitle`="Unchanged", 
+                        `title`="n", 
+                        `type`="number"),
+                    list(
+                        `name`="UnchangedPercent", 
+                        `superTitle`="Unchanged", 
+                        `title`="%", 
+                        `visible`=FALSE, 
                         `type`="number"))))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -233,6 +274,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cutoffs .
 #' @param higherBetter .
 #' @param table .
+#' @param showPercentage .
 #' @param barplot .
 #' @param scatterplot .
 #' @return A results object containing:
@@ -263,6 +305,7 @@ clinsig <- function(
     cutoffs = "a",
     higherBetter = TRUE,
     table = TRUE,
+    showPercentage = FALSE,
     barplot = FALSE,
     scatterplot = FALSE) {
 
@@ -293,6 +336,7 @@ clinsig <- function(
         cutoffs = cutoffs,
         higherBetter = higherBetter,
         table = table,
+        showPercentage = showPercentage,
         barplot = barplot,
         scatterplot = scatterplot)
 

@@ -89,6 +89,11 @@ options:
       title: Table
       type: Bool
       default: true
+      
+    - name: showPercentage
+      title: Show percentage
+      type: Bool
+      default: false
 
     - name: barplot
       title: Bar plot

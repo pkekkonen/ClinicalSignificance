@@ -141,34 +141,82 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table_zero <-table(factor(df$patient_status,
                                           levels = c("Detoriated",  "Improved", "Recovered", "Unchanged")),
                                    factor(df$values_group))
+                
 
                 frequency_df_zero <- as.data.frame(table_zero)
                 colnames(frequency_df_zero) <- c("patient_status", "values_group", "no_of_patients")
 
                 i <- 0
-                for (group in unique(frequency_df$values_group)){
-                    self$results$table$addRow(group, values = list(
-                        treatment = group,
-                        Detoriated = frequency_df_zero$no_of_patients[1 + i],
-                        Improved = frequency_df_zero$no_of_patients[2 + i],
-                        Recovered = frequency_df_zero$no_of_patients[3 + i],
-                        Unchanged = frequency_df_zero$no_of_patients[4 + i]
-                    ))
-                    i <- i + 4
+                
+                if(self$options$showPercentage) {
+                    for (group in unique(frequency_df$values_group)){
+                        
+                        detoriated <- frequency_df_zero$no_of_patients[1 + i]
+                        improved <- frequency_df_zero$no_of_patients[2 + i]
+                        recovered <- frequency_df_zero$no_of_patients[3 + i]
+                        unchanged <- frequency_df_zero$no_of_patients[4 + i]
+                        
+                        total <- detoriated + improved + recovered + unchanged 
+                        
+                        self$results$table$columns$DetoriatedPercent$setVisible(TRUE)
+                        self$results$table$columns$ImprovedPercent$setVisible(TRUE)
+                        self$results$table$columns$RecoveredPercent$setVisible(TRUE)
+                        self$results$table$columns$UnchangedPercent$setVisible(TRUE)
+                        
+                        detoriated_percent <- sprintf("%s", format(round(detoriated/total*100, 2), nsmall = 2))
+                        improved_percent <- sprintf("%s", format(round(improved/total*100, 2), nsmall = 2))
+                        recovered_percent <- sprintf("%s", format(round(recovered/total*100, 2), nsmall = 2))
+                        unchanged_percent <- sprintf("%s", format(round(unchanged/total*100, 2), nsmall = 2))
+                        
+                        self$results$table$addRow(group, values = list(
+                            treatment = group,
+                            Detoriated = detoriated,
+                            Improved = improved,
+                            Recovered = recovered,
+                            Unchanged = unchanged,
+                            DetoriatedPercent = detoriated_percent,
+                            ImprovedPercent = improved_percent,
+                            RecoveredPercent = recovered_percent,
+                            UnchangedPercent = unchanged_percent
+                        ))
+                        
+                        i <- i + 4
+                    }
+                    
+                } else {
+                    for (group in unique(frequency_df$values_group)){
+                        
+                        self$results$table$columns$DetoriatedPercent$setVisible(FALSE)
+                        self$results$table$columns$ImprovedPercent$setVisible(FALSE)
+                        self$results$table$columns$RecoveredPercent$setVisible(FALSE)
+                        self$results$table$columns$UnchangedPercent$setVisible(FALSE)
+                        
+                        self$results$table$addRow(group, values = list(
+                            treatment = group,
+                            Detoriated = frequency_df_zero$no_of_patients[1 + i],
+                            Improved = frequency_df_zero$no_of_patients[2 + i],
+                            Recovered = frequency_df_zero$no_of_patients[3 + i],
+                            Unchanged = frequency_df_zero$no_of_patients[4 + i]
+                        ))
+                        
+                        
+                        i <- i + 4
+                    }
                 }
-
+                
+                
                 if(self$options$table) {
                     print(nrow(self$results$table))
                 } else {
                     self$results$table$setVisible(FALSE)
                     return;
                 }
-
+                
             } else {
                 self$results$table$setVisible(FALSE)
                 return;
             }
-            },
+        },
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
         #                                                       RENDERING                                                         #

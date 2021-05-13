@@ -126,7 +126,7 @@ children:
         stretchFactor: 1
         children:
           - type: Label
-            label: ""
+            label: ''
             cell:
               row: 0
               column: 1
@@ -136,8 +136,13 @@ children:
             children:
               - type: CheckBox
                 name: table
+                children:
+                  - type: CheckBox
+                    name: showPercentage
+                    enable: (table)
+                
           - type: Label
-            label: ""
+            label: ''
             cell:
               row: 0
               column: 2
@@ -148,7 +153,7 @@ children:
               - type: CheckBox
                 name: barplot
           - type: Label
-            label: ""
+            label: ''
             cell:
               row: 0
               column: 3

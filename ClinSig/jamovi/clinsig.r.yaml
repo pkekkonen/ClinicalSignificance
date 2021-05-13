@@ -10,15 +10,48 @@ items:
       rows: 0
       columns:
         - name: treatment
-          title: Treatment
+          superTitle: Treatment
+          title: ""
           type: text
+          
         - name: Detoriated
+          superTitle: Detoriated
+          title: n
           type: number
+        - name: DetoriatedPercent
+          superTitle: Detoriated
+          title: "%"
+          visible: false
+          type: number
+          
         - name: Improved
+          superTitle: Improved
+          title: n
           type: number
+        - name: ImprovedPercent
+          superTitle: Improved
+          title: "%"
+          visible: false
+          type: number
+          
         - name: Recovered
+          superTitle: Recovered
+          title: n
           type: number
+        - name: RecoveredPercent
+          superTitle: Recovered
+          title: "%"          
+          visible: false
+          type: number
+          
         - name: Unchanged
+          superTitle: Unchanged
+          title: n
+          type: number
+        - name: UnchangedPercent
+          superTitle: Unchanged
+          title: "%"
+          visible: false
           type: number
 
 
