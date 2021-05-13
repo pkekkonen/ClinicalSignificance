@@ -14,12 +14,12 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             dys_sd = 0,
             func_mean = 0,
             func_sd = 0,
-            valueOfR = NULL,
+            valueOfR = -1,
             cutoffs = "a",
             higherBetter = TRUE,
-            table = FALSE,
+            table = TRUE,
             barplot = FALSE,
-            scatterplot = TRUE, ...) {
+            scatterplot = FALSE, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -71,6 +71,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..valueOfR <- jmvcore::OptionNumber$new(
                 "valueOfR",
                 valueOfR,
+                default=-1,
                 min=0,
                 max=1)
             private$..cutoffs <- jmvcore::OptionList$new(
@@ -88,7 +89,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..table <- jmvcore::OptionBool$new(
                 "table",
                 table,
-                default=FALSE)
+                default=TRUE)
             private$..barplot <- jmvcore::OptionBool$new(
                 "barplot",
                 barplot,
@@ -96,7 +97,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..scatterplot <- jmvcore::OptionBool$new(
                 "scatterplot",
                 scatterplot,
-                default=TRUE)
+                default=FALSE)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
@@ -258,12 +259,12 @@ clinsig <- function(
     dys_sd = 0,
     func_mean = 0,
     func_sd = 0,
-    valueOfR,
+    valueOfR = -1,
     cutoffs = "a",
     higherBetter = TRUE,
-    table = FALSE,
+    table = TRUE,
     barplot = FALSE,
-    scatterplot = TRUE) {
+    scatterplot = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")

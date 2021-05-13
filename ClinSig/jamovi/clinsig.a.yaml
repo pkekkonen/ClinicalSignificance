@@ -64,6 +64,7 @@ options:
     - name: valueOfR
       title: "Value:"
       type: Number
+      default: -1
       min: 0
       max: 1
 
@@ -87,7 +88,7 @@ options:
     - name: table
       title: Table
       type: Bool
-      default: false
+      default: true
 
     - name: barplot
       title: Bar plot
@@ -97,6 +98,6 @@ options:
     - name: scatterplot
       title: Scatter plot
       type: Bool
-      default: true
+      default: false
 
 ...
