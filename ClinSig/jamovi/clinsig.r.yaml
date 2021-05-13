@@ -9,8 +9,8 @@ items:
       type:  Table
       rows: 0
       columns:
-        - name: treatment
-          title: Treatment
+        - name: grouping
+          title: Grouping
           type: text
         - name: Detoriated
           type: number

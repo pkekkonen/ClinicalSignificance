@@ -167,8 +167,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 rows=0,
                 columns=list(
                     list(
-                        `name`="treatment", 
-                        `title`="Treatment", 
+                        `name`="grouping", 
+                        `title`="Grouping", 
                         `type`="text"),
                     list(
                         `name`="Detoriated", 
