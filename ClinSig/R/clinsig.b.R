@@ -167,7 +167,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 col$setSuperTitle(col$name)
                                 if(j > 1)
                                     col$setTitle("n")
-                                else
+                                else 
                                     col$setTitle(self$options$groupingVar)
                             }
 
@@ -222,7 +222,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         i <- i + 4
                     }
                 }
-
+                
+                if(is.null(self$options$groupingVar)) {
+                    self$results$table$columns$Grouping$setVisible(FALSE)
+                } else {
+                    self$results$table$columns$Grouping$setVisible(TRUE)
+                }
 
                 if(self$options$table) {
                     print(nrow(self$results$table))
