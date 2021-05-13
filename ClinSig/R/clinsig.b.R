@@ -197,6 +197,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 values_group <- image_scatter$state$values_group
                 patient_status <-plotData$patient_status
                 groups <- unique(plotData$values_group)
+                max_all <- max(max(plotData$values_pre), max(plotData$values_post))
+                min_all <- min(min(plotData$values_pre), min(plotData$values_post))
+
 
                 if(length(groups) > 5 & !(is.null(self$options$groupingVar))) {  # Show error message if more than five different treatments
                     scatter_plot <-  ggplot() +
@@ -209,6 +212,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     used_filling_shapes <- available_filling_shapes[1:length(groups)]
 
                     scatter_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
+                        coord_cartesian(xlim = c(min_all, max_all), ylim = c(min_all, max_all), expand = TRUE) +
                         geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                         geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                         geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
