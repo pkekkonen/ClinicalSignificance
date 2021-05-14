@@ -61,7 +61,7 @@ options:
       default: 0
 
 
-    - name: valueOfR
+    - name: reliabilityMeasurement
       title: "Value:"
       type: Number
       default: -1
@@ -89,7 +89,7 @@ options:
       title: Table
       type: Bool
       default: true
-      
+
     - name: showPercentage
       title: Show percentage
       type: Bool

@@ -14,7 +14,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             dys_sd = 0,
             func_mean = 0,
             func_sd = 0,
-            valueOfR = -1,
+            reliabilityMeasurement = -1,
             cutoffs = "a",
             higherBetter = TRUE,
             table = TRUE,
@@ -69,9 +69,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "func_sd",
                 func_sd,
                 default=0)
-            private$..valueOfR <- jmvcore::OptionNumber$new(
-                "valueOfR",
-                valueOfR,
+            private$..reliabilityMeasurement <- jmvcore::OptionNumber$new(
+                "reliabilityMeasurement",
+                reliabilityMeasurement,
                 default=-1,
                 min=0,
                 max=1)
@@ -112,7 +112,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..dys_sd)
             self$.addOption(private$..func_mean)
             self$.addOption(private$..func_sd)
-            self$.addOption(private$..valueOfR)
+            self$.addOption(private$..reliabilityMeasurement)
             self$.addOption(private$..cutoffs)
             self$.addOption(private$..higherBetter)
             self$.addOption(private$..table)
@@ -129,7 +129,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         dys_sd = function() private$..dys_sd$value,
         func_mean = function() private$..func_mean$value,
         func_sd = function() private$..func_sd$value,
-        valueOfR = function() private$..valueOfR$value,
+        reliabilityMeasurement = function() private$..reliabilityMeasurement$value,
         cutoffs = function() private$..cutoffs$value,
         higherBetter = function() private$..higherBetter$value,
         table = function() private$..table$value,
@@ -145,7 +145,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..dys_sd = NA,
         ..func_mean = NA,
         ..func_sd = NA,
-        ..valueOfR = NA,
+        ..reliabilityMeasurement = NA,
         ..cutoffs = NA,
         ..higherBetter = NA,
         ..table = NA,
@@ -274,7 +274,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param dys_sd .
 #' @param func_mean .
 #' @param func_sd .
-#' @param valueOfR .
+#' @param reliabilityMeasurement .
 #' @param cutoffs .
 #' @param higherBetter .
 #' @param table .
@@ -306,7 +306,7 @@ clinsig <- function(
     dys_sd = 0,
     func_mean = 0,
     func_sd = 0,
-    valueOfR = -1,
+    reliabilityMeasurement = -1,
     cutoffs = "a",
     higherBetter = TRUE,
     table = TRUE,
@@ -337,7 +337,7 @@ clinsig <- function(
         dys_sd = dys_sd,
         func_mean = func_mean,
         func_sd = func_sd,
-        valueOfR = valueOfR,
+        reliabilityMeasurement = reliabilityMeasurement,
         cutoffs = cutoffs,
         higherBetter = higherBetter,
         table = table,

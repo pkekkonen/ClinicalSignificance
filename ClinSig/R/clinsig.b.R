@@ -51,9 +51,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if(self$options$cutoffs == "a") {
                     if(self$options$higherBetter) { # Checks if higher score indicates improvement
-                        result_abc <- m_pre+2*sd_pre
+                        cutoff <- m_pre+2*sd_pre
                     } else {
-                        result_abc <- m_pre-2*sd_pre
+                        cutoff <- m_pre-2*sd_pre
                     }
                 }
 
@@ -62,16 +62,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     sd_post <- self$options$func_sd
 
                     if(self$options$higherBetter) { # Checks if higher score indicates improvement
-                        result_abc <- m_post-2*sd_post
+                        cutoff <- m_post-2*sd_post
                     } else {
-                        result_abc <- m_post+2*sd_post
+                        cutoff <- m_post+2*sd_post
                     }
                 }
 
                 if(self$options$cutoffs == "c") {
                     m_post <- self$options$func_mean
                     sd_post <- self$options$func_sd
-                    result_abc <- (sd_post * m_pre + sd_pre * m_post)/(sd_post + sd_pre)
+                    cutoff <- (sd_post * m_pre + sd_pre * m_post)/(sd_post + sd_pre)
                 }
 
 
@@ -80,8 +80,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 # Calculation for RCI
-                r_value <- self$options$valueOfR
-                standard_error_of_measurement <- sd_pre*sqrt(1-r_value)
+                reliabilityMeasurement <- self$options$reliabilityMeasurement #Reliability of measurement
+                standard_error_of_measurement <- sd_pre*sqrt(1-reliabilityMeasurement)
                 s_diff <- sqrt(2*(standard_error_of_measurement ^ 2))
 
                 # We want to create rci boundary lines (y=kx+m) where x = values_pre, y = values_post, k = 1 and m (the interception point) is the negative and positive value of the following
@@ -94,9 +94,9 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
                 if(self$options$higherBetter) {
-                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged")))
+                    patient_status <- c(ifelse(values_post-values_pre >= interception_point, ifelse(values_post >= cutoff,"Recovered","Improved"),ifelse(values_post-values_pre <= interception_point_minus,"Detoriated","Unchanged")))
                 } else {
-                    patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= result_abc,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged")))
+                    patient_status <- c(ifelse(values_post-values_pre <= interception_point_minus,ifelse(values_post <= cutoff,"Recovered","Improved"),ifelse(values_post-values_pre >= interception_point,"Detoriated","Unchanged")))
                 }
 
 
@@ -106,8 +106,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if(self$options$scatterplot) {
                     # Create dataframe with the relevant values for plotting
-                    df_scatterplot <- data.frame(values_pre, values_post, values_group, patient_status, result_abc, interception_point, interception_point_minus) # Dataframe consisting of pre and postvalues
-                    colnames(df_scatterplot) <- c("values_pre", "values_post", "values_group", "patient_status", "result_abc", "interception_point", "interception_point_minus")
+                    df_scatterplot <- data.frame(values_pre, values_post, values_group, patient_status, cutoff, interception_point, interception_point_minus) # Dataframe consisting of pre and postvalues
+                    colnames(df_scatterplot) <- c("values_pre", "values_post", "values_group", "patient_status", "cutoff", "interception_point", "interception_point_minus")
 
                     # Save dataframe to image
                     image_scatter <- self$results$scatterplot
@@ -167,7 +167,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 col$setSuperTitle(col$name)
                                 if(j > 1)
                                     col$setTitle("n")
-                                else 
+                                else
                                     col$setTitle(self$options$groupingVar)
                             }
 
@@ -222,7 +222,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         i <- i + 4
                     }
                 }
-                
+
                 if(is.null(self$options$groupingVar)) {
                     self$results$table$columns$Grouping$setVisible(FALSE)
                 } else {
@@ -263,7 +263,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             plotData <- image_scatter$state
             if (!is.null(plotData)) {
-                result_abc <- image_scatter$state$result_abc
+                cutoff <- image_scatter$state$cutoff
                 interception_point <- image_scatter$state$interception_point
                 interception_point_minus <- image_scatter$state$interception_point_minus
                 values_group <- image_scatter$state$values_group
@@ -285,7 +285,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                     scatter_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
                         coord_cartesian(xlim = c(min_all, max_all), ylim = c(min_all, max_all), expand = TRUE) +
-                        geom_abline(aes(intercept = result_abc, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
+                        geom_abline(aes(intercept = cutoff, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                         geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                         geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
                         geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary

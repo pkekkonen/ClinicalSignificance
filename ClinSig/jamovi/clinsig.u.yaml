@@ -108,7 +108,7 @@ children:
             label: Reliability of measurement
             children:
               - type: TextBox
-                name: valueOfR
+                name: reliabilityMeasurement
                 format: number
           - type: Label
             label: Options
@@ -140,7 +140,7 @@ children:
                   - type: CheckBox
                     name: showPercentage
                     enable: (table)
-                
+
           - type: Label
             label: ''
             cell:
