@@ -31,7 +31,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 values_post <- dataframe_without_na$values_post
                 values_pre <- dataframe_without_na$values_pre
-                values_group <- dataframe_without_na$values_group
+                values_group <- factor(dataframe_without_na$values_group)
 
                 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
                 #                                             MEAN AND STANDARD DEVIATION                                                 #
@@ -194,6 +194,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         i <- i + 4
                     }
 
+
                 } else {
                     for (group in unique(frequency_df$values_group)){
 
@@ -240,6 +241,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 self$results$table$setVisible(FALSE)
                 return;
             }
+
         },
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
