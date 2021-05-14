@@ -121,7 +121,7 @@ children:
     stretchFactor: 1
     children:
       - type: LayoutBox
-        margin: large
+        margin: normal
         style: inline
         stretchFactor: 1
         children:
@@ -131,7 +131,7 @@ children:
               row: 0
               column: 1
             stretchFactor: 1
-            margin: large
+            margin: normal
             style: list-inline
             children:
               - type: CheckBox
@@ -147,7 +147,7 @@ children:
               row: 0
               column: 2
             stretchFactor: 1
-            margin: large
+            margin: normal
             style: list-inline
             children:
               - type: CheckBox
@@ -162,7 +162,7 @@ children:
               row: 0
               column: 3
             stretchFactor: 1
-            margin: large
+            margin: normal
             style: list-inline
             children:
               - type: CheckBox

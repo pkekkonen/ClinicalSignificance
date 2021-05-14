@@ -273,10 +273,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         i <- i+1
                         
                     }
+                    
                 } else {
                     labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                 }
                 
+                names(labels) <- c("Detoriated", "Improved","Recovered", "Unchanged")
                 
                 
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
@@ -352,6 +354,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     } else {
                         labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                     }
+                    
+                    names(labels) <- c("Detoriated", "Improved","Recovered", "Unchanged")
                     
                     
                     # Check whether grouping should be with as a variable
