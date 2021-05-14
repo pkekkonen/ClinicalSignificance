@@ -249,8 +249,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .barplot=function(image, ...) {
             plotData <- image$state
             if (!is.null(plotData)) {
+                status_title <- "Patient status"
+                
                 if(self$options$showBarPlotAmount) {
                     labels <- c()
+                    status_title <- paste(status_title, "\n")
                     
                     i <- 1
                     no_of_rows <- self$results$table$rowCount
@@ -274,6 +277,16 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         
                     }
                     
+                    i <- 1
+                    while(i <= no_of_rows) {
+                        status_title <- paste(status_title, self$results$table$getCell(rowNo=i,col="Grouping")$value)
+                        
+                        if(i < no_of_rows) 
+                            status_title <- paste(status_title, "/")
+                        
+                        i <- i+1
+                    }
+                    
                 } else {
                     labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                 }
@@ -284,7 +297,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
                     geom_bar(stat="identity", position = position_dodge()) + 
                     scale_fill_manual(labels = labels, values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-                    labs(x = self$options$groupingVar, y = "Number of patients", fill = "Patient status") # Barplot
+                    labs(x = self$options$groupingVar, y = "Number of patients", fill = status_title) # Barplot
                 print(barplot)
                 TRUE
             } else {
@@ -326,9 +339,11 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                         theme(legend.position = "right")
                     
-                    
+                    status_title <- "Patient status"
+                        
                     if(self$options$showScatterPlotAmount) {
                         labels <- c()
+                        status_title <- paste(status_title, "\n")
                         
                         i <- 1
                         no_of_rows <- self$results$table$rowCount
@@ -340,10 +355,10 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                 
                                 while(j <= no_of_rows) {
                                     label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name)$value)
-                                    
-                                    if(j < no_of_rows)
+
+                                    if(j < no_of_rows) 
                                         label <- paste(label, "/")
-                                    
+
                                     j <- j+1
                                 }
                                 labels <-c(labels, label)
@@ -351,6 +366,17 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             i <- i+1
                             
                         }
+                        
+                        i <- 1
+                        while(i <= no_of_rows) {
+                            status_title <- paste(status_title, self$results$table$getCell(rowNo=i,col="Grouping")$value)
+                            
+                            if(i < no_of_rows) 
+                                status_title <- paste(status_title, "/")
+                            
+                            i <- i+1
+                        }
+                        
                     } else {
                         labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                     }
@@ -363,7 +389,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scatter_plot <- scatter_plot +
                             scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
                             geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Patient status")
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= status_title)
                     } else {
                         
                         scatter_plot <- scatter_plot +
@@ -372,7 +398,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                             guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Patient status", shape = self$options$groupingVar)
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= status_title, shape = self$options$groupingVar)
                     }
 
                 }
