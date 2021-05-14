@@ -289,7 +289,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                         geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
                         geom_abline(aes(intercept=interception_point_minus, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
-                        scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
                         scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                         scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                         theme(legend.position = "right")
@@ -297,10 +296,38 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     # Check whether grouping should be with as a variable
                     if (length(groups) == 1) {
                         scatter_plot <- scatter_plot +
+                            scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
                             geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
                             labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status")
                     } else {
+                        
+                        labels <- c()
+                        
+                        i <- 1
+                        
+                        for(col in self$results$table$columns) {
+                            if(i>1 && i %% 2 == 0) {
+                                label <- paste0(col$name,":")
+                                j <- 1
+                                
+                                while(j <= length(groups)) {
+                                    label 
+                                    label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name))
+                                    
+                                    if(j < length(groups))
+                                        label <- paste(label, "/")
+                                
+                                    j <- j+1
+                                }
+                                labels <-c(labels, label)
+                            } 
+                            i <- i+1
+                            
+                        }
+                        
+                        
                         scatter_plot <- scatter_plot +
+                            scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
                             geom_point(aes(shape = factor(values_group),fill = factor(patient_status)), size=3, stroke=0) +
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
