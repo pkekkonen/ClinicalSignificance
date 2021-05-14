@@ -152,6 +152,10 @@ children:
             children:
               - type: CheckBox
                 name: barplot
+                children:
+                  - type: CheckBox
+                    name: showBarPlotAmount
+                    enable: (barplot)
           - type: Label
             label: ''
             cell:
@@ -163,3 +167,7 @@ children:
             children:
               - type: CheckBox
                 name: scatterplot
+                children:
+                  - type: CheckBox
+                    name: showScatterPlotAmount
+                    enable: (scatterplot)  

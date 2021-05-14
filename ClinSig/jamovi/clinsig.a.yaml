@@ -81,7 +81,7 @@ options:
       default: a
 
     - name: higherBetter
-      title: Is higher better?
+      title: Higher is better
       type: Bool
       default: true
 
@@ -99,9 +99,19 @@ options:
       title: Bar plot
       type: Bool
       default: false
+      
+    - name: showBarPlotAmount
+      title: Show amount in legend
+      type: Bool
+      default: false
 
     - name: scatterplot
       title: Scatter plot
+      type: Bool
+      default: false
+      
+    - name: showScatterPlotAmount
+      title: Show amount in legend
       type: Bool
       default: false
 

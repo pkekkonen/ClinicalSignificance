@@ -20,7 +20,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             table = TRUE,
             showPercentage = FALSE,
             barplot = FALSE,
-            scatterplot = FALSE, ...) {
+            showBarPlotAmount = FALSE,
+            scatterplot = FALSE,
+            showScatterPlotAmount = FALSE, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -99,9 +101,17 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "barplot",
                 barplot,
                 default=FALSE)
+            private$..showBarPlotAmount <- jmvcore::OptionBool$new(
+                "showBarPlotAmount",
+                showBarPlotAmount,
+                default=FALSE)
             private$..scatterplot <- jmvcore::OptionBool$new(
                 "scatterplot",
                 scatterplot,
+                default=FALSE)
+            private$..showScatterPlotAmount <- jmvcore::OptionBool$new(
+                "showScatterPlotAmount",
+                showScatterPlotAmount,
                 default=FALSE)
 
             self$.addOption(private$..pre)
@@ -118,7 +128,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..table)
             self$.addOption(private$..showPercentage)
             self$.addOption(private$..barplot)
+            self$.addOption(private$..showBarPlotAmount)
             self$.addOption(private$..scatterplot)
+            self$.addOption(private$..showScatterPlotAmount)
         }),
     active = list(
         pre = function() private$..pre$value,
@@ -135,7 +147,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         table = function() private$..table$value,
         showPercentage = function() private$..showPercentage$value,
         barplot = function() private$..barplot$value,
-        scatterplot = function() private$..scatterplot$value),
+        showBarPlotAmount = function() private$..showBarPlotAmount$value,
+        scatterplot = function() private$..scatterplot$value,
+        showScatterPlotAmount = function() private$..showScatterPlotAmount$value),
     private = list(
         ..pre = NA,
         ..post = NA,
@@ -151,7 +165,9 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..table = NA,
         ..showPercentage = NA,
         ..barplot = NA,
-        ..scatterplot = NA)
+        ..showBarPlotAmount = NA,
+        ..scatterplot = NA,
+        ..showScatterPlotAmount = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -231,8 +247,8 @@ clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="barplot",
                 title="Bar plot",
-                width=400,
-                height=300,
+                width=600,
+                height=400,
                 renderFun=".barplot"))
             self$add(jmvcore::Image$new(
                 options=options,
@@ -280,7 +296,9 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param table .
 #' @param showPercentage .
 #' @param barplot .
+#' @param showBarPlotAmount .
 #' @param scatterplot .
+#' @param showScatterPlotAmount .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
@@ -312,7 +330,9 @@ clinsig <- function(
     table = TRUE,
     showPercentage = FALSE,
     barplot = FALSE,
-    scatterplot = FALSE) {
+    showBarPlotAmount = FALSE,
+    scatterplot = FALSE,
+    showScatterPlotAmount = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -343,7 +363,9 @@ clinsig <- function(
         table = table,
         showPercentage = showPercentage,
         barplot = barplot,
-        scatterplot = scatterplot)
+        showBarPlotAmount = showBarPlotAmount,
+        scatterplot = scatterplot,
+        showScatterPlotAmount = showScatterPlotAmount)
 
     analysis <- clinsigClass$new(
         options = options,

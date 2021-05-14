@@ -249,8 +249,39 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .barplot=function(image, ...) {
             plotData <- image$state
             if (!is.null(plotData)) {
+                if(self$options$showBarPlotAmount) {
+                    labels <- c()
+                    
+                    i <- 1
+                    no_of_rows <- self$results$table$rowCount
+                    
+                    for(col in self$results$table$columns) {
+                        if(i>1 && i %% 2 == 0) {
+                            label <- paste0(col$name,":")
+                            j <- 1
+                            
+                            while(j <= no_of_rows) {
+                                label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name)$value)
+                                
+                                if(j < no_of_rows)
+                                    label <- paste(label, "/")
+                                
+                                j <- j+1
+                            }
+                            labels <-c(labels, label)
+                        } 
+                        i <- i+1
+                        
+                    }
+                } else {
+                    labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
+                }
+                
+                
+                
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
-                    geom_bar(stat="identity", position = position_dodge()) + scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
+                    geom_bar(stat="identity", position = position_dodge()) + 
+                    scale_fill_manual(labels = labels, values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
                     labs(x = self$options$groupingVar, y = "Number of patients", fill = "Patient status") # Barplot
                 print(barplot)
                 TRUE
@@ -292,31 +323,25 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                         scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                         theme(legend.position = "right")
-
-                    # Check whether grouping should be with as a variable
-                    if (length(groups) == 1) {
-                        scatter_plot <- scatter_plot +
-                            scale_fill_manual(values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
-                            geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status")
-                    } else {
-                        
+                    
+                    
+                    if(self$options$showScatterPlotAmount) {
                         labels <- c()
                         
                         i <- 1
+                        no_of_rows <- self$results$table$rowCount
                         
                         for(col in self$results$table$columns) {
                             if(i>1 && i %% 2 == 0) {
                                 label <- paste0(col$name,":")
                                 j <- 1
                                 
-                                while(j <= length(groups)) {
-                                    label 
-                                    label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name))
+                                while(j <= no_of_rows) {
+                                    label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name)$value)
                                     
-                                    if(j < length(groups))
+                                    if(j < no_of_rows)
                                         label <- paste(label, "/")
-                                
+                                    
                                     j <- j+1
                                 }
                                 labels <-c(labels, label)
@@ -324,7 +349,18 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             i <- i+1
                             
                         }
-                        
+                    } else {
+                        labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
+                    }
+                    
+                    
+                    # Check whether grouping should be with as a variable
+                    if (length(groups) == 1) {
+                        scatter_plot <- scatter_plot +
+                            scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
+                            geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Patient status")
+                    } else {
                         
                         scatter_plot <- scatter_plot +
                             scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
@@ -332,7 +368,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                             guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Status", shape = self$options$groupingVar)
+                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= "Patient status", shape = self$options$groupingVar)
                     }
 
                 }
