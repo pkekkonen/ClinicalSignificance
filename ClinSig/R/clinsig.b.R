@@ -249,56 +249,61 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         .barplot=function(image, ...) {
+
+            recovered <- self$options$recovered
+            improved <- self$options$improved
+            unchanged <- self$options$unchanged
+            detoriated <- self$options$detoriated
             plotData <- image$state
             if (!is.null(plotData)) {
                 status_title <- "Patient status"
-                
+
                 if(self$options$showBarPlotAmount) {
                     labels <- c()
                     status_title <- paste(status_title, "\n")
-                    
+
                     i <- 1
                     no_of_rows <- self$results$table$rowCount
-                    
+
                     for(col in self$results$table$columns) {
                         if(i>1 && i %% 2 == 0) {
                             label <- paste0(col$name,":")
                             j <- 1
-                            
+
                             while(j <= no_of_rows) {
                                 label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name)$value)
-                                
+
                                 if(j < no_of_rows)
                                     label <- paste(label, "/")
-                                
+
                                 j <- j+1
                             }
                             labels <-c(labels, label)
-                        } 
+                        }
                         i <- i+1
-                        
+
                     }
-                    
+
                     i <- 1
                     while(i <= no_of_rows) {
                         status_title <- paste(status_title, self$results$table$getCell(rowNo=i,col="Grouping")$value)
-                        
-                        if(i < no_of_rows) 
+
+                        if(i < no_of_rows)
                             status_title <- paste(status_title, "/")
-                        
+
                         i <- i+1
                     }
-                    
+
                 } else {
                     labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                 }
-                
+
                 names(labels) <- c("Detoriated", "Improved","Recovered", "Unchanged")
-                
-                
+
+
                 barplot <- ggplot(data=plotData, aes(x=values_group, y=no_of_patients, fill = patient_status)) +
-                    geom_bar(stat="identity", position = position_dodge()) + 
-                    scale_fill_manual(labels = labels, values=c("Recovered"="green", "Improved"="blue", "Unchanged"="orange", "Detoriated"="red")) +
+                    geom_bar(stat="identity", position = position_dodge()) +
+                    scale_fill_manual(labels = labels, values=c("Recovered"=recovered, "Improved"=improved, "Unchanged"=unchanged, "Detoriated"=detoriated)) +
                     labs(x = self$options$groupingVar, y = "Number of patients", fill = status_title) # Barplot
                 print(barplot)
                 TRUE
@@ -308,7 +313,17 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
         },
         .scatterplot=function(image_scatter, ...) {
-
+            if(self$options$manualColours) {
+              recovered <- self$options$recovered
+                improved <- self$options$improved
+                unchanged <- self$options$unchanged
+                detoriated <- self$options$detoriated
+            } else {
+                recovered <- "#2C9A3E"
+                improved <- "#3397CD"
+                unchanged <- "#CD7933"
+                detoriated <- "#C2371C"
+            }
             plotData <- image_scatter$state
             if (!is.null(plotData)) {
                 cutoff <- image_scatter$state$cutoff
@@ -332,7 +347,6 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     used_filling_shapes <- available_filling_shapes[1:length(groups)]
 
                     scatter_plot <- ggplot(data=plotData, aes(x=plotData$values_pre, y = plotData$values_post)) +
-                        coord_cartesian(xlim = c(min_all, max_all), ylim = c(min_all, max_all), expand = TRUE) +
                         geom_abline(aes(intercept = cutoff, slope=0,linetype = "Cutoff point", color="Cutoff point")) +
                         geom_abline( aes(intercept=interception_point, slope=1, linetype="Boundary for reliable change", color="Boundary for reliable change")) + # rci boundary
                         geom_abline(aes(intercept=0, slope=1, linetype = "No change", color = "No change")) + # line indicating no change
@@ -340,62 +354,62 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scale_linetype_manual(values=c("Boundary for reliable change"="dashed", "No change"="solid", "Cutoff point"="solid")) +
                         scale_color_manual(values=c("Boundary for reliable change"="black", "No change"="black", "Cutoff point"="red")) +
                         theme(legend.position = "right")
-                    
+
                     status_title <- "Patient status"
-                        
+
                     if(self$options$showScatterPlotAmount) {
                         labels <- c()
                         status_title <- paste(status_title, "\n")
-                        
+
                         i <- 1
                         no_of_rows <- self$results$table$rowCount
-                        
+
                         for(col in self$results$table$columns) {
                             if(i>1 && i %% 2 == 0) {
                                 label <- paste0(col$name,":")
                                 j <- 1
-                                
+
                                 while(j <= no_of_rows) {
                                     label <- paste(label, self$results$table$getCell(rowNo=j,col=col$name)$value)
 
-                                    if(j < no_of_rows) 
+                                    if(j < no_of_rows)
                                         label <- paste(label, "/")
 
                                     j <- j+1
                                 }
                                 labels <-c(labels, label)
-                            } 
+                            }
                             i <- i+1
-                            
+
                         }
-                        
+
                         i <- 1
                         while(i <= no_of_rows) {
                             status_title <- paste(status_title, self$results$table$getCell(rowNo=i,col="Grouping")$value)
-                            
-                            if(i < no_of_rows) 
+
+                            if(i < no_of_rows)
                                 status_title <- paste(status_title, "/")
-                            
+
                             i <- i+1
                         }
-                        
+
                     } else {
                         labels <- c("Detoriated", "Improved","Recovered", "Unchanged")
                     }
-                    
+
                     names(labels) <- c("Detoriated", "Improved","Recovered", "Unchanged")
-                    
-                    
+
+
                     # Check whether grouping should be with as a variable
                     if (length(groups) == 1) {
                         scatter_plot <- scatter_plot +
-                            scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
+                            scale_fill_manual(labels = labels, values=c("Detoriated"=detoriated, "Improved"=improved,"Recovered"=recovered, "Unchanged"=unchanged)) +
                             geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
                             labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= status_title)
                     } else {
-                        
+
                         scatter_plot <- scatter_plot +
-                            scale_fill_manual(labels = labels, values=c("Detoriated"="red", "Improved"="blue","Recovered"="green", "Unchanged"="orange")) +
+                            scale_fill_manual(labels = labels, values=c("Detoriated"=detoriated, "Improved"=improved,"Recovered"=recovered, "Unchanged"=unchanged)) +
                             geom_point(aes(shape = factor(values_group),fill = factor(patient_status)), size=3, stroke=0) +
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
@@ -404,6 +418,28 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     }
 
                 }
+
+                if(self$options$manualLimit) {
+                    xLims <- c(self$options$xAxisLower, self$options$xAxisUpper)
+                    yLims <- c(self$options$yAxisLower, self$options$yAxisUpper)
+                } else {
+                    xLims <- c(min_all, max_all)
+                    yLims <- c(min_all, max_all)
+                }
+
+
+                if(self$options$manualTicks) {
+                    scatter_plot <- scatter_plot +
+                        scale_x_continuous(limits = xLims, breaks = scales::pretty_breaks(n = self$options$numberOfTicksX)) +
+                        scale_y_continuous(limits = yLims, breaks = scales::pretty_breaks(n = self$options$numberOfTicksY))
+                } else {
+                    scatter_plot <- scatter_plot +
+                        scale_x_continuous(limits = xLims) +
+                        scale_y_continuous(limits = yLims)
+                }
+
+
+
                 print(scatter_plot)
 
                 TRUE

@@ -22,7 +22,20 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             barplot = FALSE,
             showBarPlotAmount = FALSE,
             scatterplot = FALSE,
-            showScatterPlotAmount = FALSE, ...) {
+            showScatterPlotAmount = FALSE,
+            manualColours = FALSE,
+            recovered = "#2C9A3E",
+            improved = "#3397CD",
+            unchanged = "#CD7933",
+            detoriated = "#C2371C",
+            manualTicks = FALSE,
+            numberOfTicksX = 10,
+            numberOfTicksY = 10,
+            manualLimit = FALSE,
+            xAxisLower = NULL,
+            xAxisUpper = NULL,
+            yAxisLower = NULL,
+            yAxisUpper = NULL, ...) {
 
             super$initialize(
                 package="ClinSig",
@@ -113,6 +126,54 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "showScatterPlotAmount",
                 showScatterPlotAmount,
                 default=FALSE)
+            private$..manualColours <- jmvcore::OptionBool$new(
+                "manualColours",
+                manualColours,
+                default=FALSE)
+            private$..recovered <- jmvcore::OptionString$new(
+                "recovered",
+                recovered,
+                default="#2C9A3E")
+            private$..improved <- jmvcore::OptionString$new(
+                "improved",
+                improved,
+                default="#3397CD")
+            private$..unchanged <- jmvcore::OptionString$new(
+                "unchanged",
+                unchanged,
+                default="#CD7933")
+            private$..detoriated <- jmvcore::OptionString$new(
+                "detoriated",
+                detoriated,
+                default="#C2371C")
+            private$..manualTicks <- jmvcore::OptionBool$new(
+                "manualTicks",
+                manualTicks,
+                default=FALSE)
+            private$..numberOfTicksX <- jmvcore::OptionNumber$new(
+                "numberOfTicksX",
+                numberOfTicksX,
+                default=10)
+            private$..numberOfTicksY <- jmvcore::OptionNumber$new(
+                "numberOfTicksY",
+                numberOfTicksY,
+                default=10)
+            private$..manualLimit <- jmvcore::OptionBool$new(
+                "manualLimit",
+                manualLimit,
+                default=FALSE)
+            private$..xAxisLower <- jmvcore::OptionNumber$new(
+                "xAxisLower",
+                xAxisLower)
+            private$..xAxisUpper <- jmvcore::OptionNumber$new(
+                "xAxisUpper",
+                xAxisUpper)
+            private$..yAxisLower <- jmvcore::OptionNumber$new(
+                "yAxisLower",
+                yAxisLower)
+            private$..yAxisUpper <- jmvcore::OptionNumber$new(
+                "yAxisUpper",
+                yAxisUpper)
 
             self$.addOption(private$..pre)
             self$.addOption(private$..post)
@@ -131,6 +192,19 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showBarPlotAmount)
             self$.addOption(private$..scatterplot)
             self$.addOption(private$..showScatterPlotAmount)
+            self$.addOption(private$..manualColours)
+            self$.addOption(private$..recovered)
+            self$.addOption(private$..improved)
+            self$.addOption(private$..unchanged)
+            self$.addOption(private$..detoriated)
+            self$.addOption(private$..manualTicks)
+            self$.addOption(private$..numberOfTicksX)
+            self$.addOption(private$..numberOfTicksY)
+            self$.addOption(private$..manualLimit)
+            self$.addOption(private$..xAxisLower)
+            self$.addOption(private$..xAxisUpper)
+            self$.addOption(private$..yAxisLower)
+            self$.addOption(private$..yAxisUpper)
         }),
     active = list(
         pre = function() private$..pre$value,
@@ -149,7 +223,20 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         barplot = function() private$..barplot$value,
         showBarPlotAmount = function() private$..showBarPlotAmount$value,
         scatterplot = function() private$..scatterplot$value,
-        showScatterPlotAmount = function() private$..showScatterPlotAmount$value),
+        showScatterPlotAmount = function() private$..showScatterPlotAmount$value,
+        manualColours = function() private$..manualColours$value,
+        recovered = function() private$..recovered$value,
+        improved = function() private$..improved$value,
+        unchanged = function() private$..unchanged$value,
+        detoriated = function() private$..detoriated$value,
+        manualTicks = function() private$..manualTicks$value,
+        numberOfTicksX = function() private$..numberOfTicksX$value,
+        numberOfTicksY = function() private$..numberOfTicksY$value,
+        manualLimit = function() private$..manualLimit$value,
+        xAxisLower = function() private$..xAxisLower$value,
+        xAxisUpper = function() private$..xAxisUpper$value,
+        yAxisLower = function() private$..yAxisLower$value,
+        yAxisUpper = function() private$..yAxisUpper$value),
     private = list(
         ..pre = NA,
         ..post = NA,
@@ -167,7 +254,20 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..barplot = NA,
         ..showBarPlotAmount = NA,
         ..scatterplot = NA,
-        ..showScatterPlotAmount = NA)
+        ..showScatterPlotAmount = NA,
+        ..manualColours = NA,
+        ..recovered = NA,
+        ..improved = NA,
+        ..unchanged = NA,
+        ..detoriated = NA,
+        ..manualTicks = NA,
+        ..numberOfTicksX = NA,
+        ..numberOfTicksY = NA,
+        ..manualLimit = NA,
+        ..xAxisLower = NA,
+        ..xAxisUpper = NA,
+        ..yAxisLower = NA,
+        ..yAxisUpper = NA)
 )
 
 clinsigResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -295,6 +395,19 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param showBarPlotAmount .
 #' @param scatterplot .
 #' @param showScatterPlotAmount .
+#' @param manualColours .
+#' @param recovered .
+#' @param improved .
+#' @param unchanged .
+#' @param detoriated .
+#' @param manualTicks .
+#' @param numberOfTicksX .
+#' @param numberOfTicksY .
+#' @param manualLimit .
+#' @param xAxisLower .
+#' @param xAxisUpper .
+#' @param yAxisLower .
+#' @param yAxisUpper .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
@@ -327,7 +440,20 @@ clinsig <- function(
     barplot = FALSE,
     showBarPlotAmount = FALSE,
     scatterplot = FALSE,
-    showScatterPlotAmount = FALSE) {
+    showScatterPlotAmount = FALSE,
+    manualColours = FALSE,
+    recovered = "#2C9A3E",
+    improved = "#3397CD",
+    unchanged = "#CD7933",
+    detoriated = "#C2371C",
+    manualTicks = FALSE,
+    numberOfTicksX = 10,
+    numberOfTicksY = 10,
+    manualLimit = FALSE,
+    xAxisLower,
+    xAxisUpper,
+    yAxisLower,
+    yAxisUpper) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("clinsig requires jmvcore to be installed (restart may be required)")
@@ -360,7 +486,20 @@ clinsig <- function(
         barplot = barplot,
         showBarPlotAmount = showBarPlotAmount,
         scatterplot = scatterplot,
-        showScatterPlotAmount = showScatterPlotAmount)
+        showScatterPlotAmount = showScatterPlotAmount,
+        manualColours = manualColours,
+        recovered = recovered,
+        improved = improved,
+        unchanged = unchanged,
+        detoriated = detoriated,
+        manualTicks = manualTicks,
+        numberOfTicksX = numberOfTicksX,
+        numberOfTicksY = numberOfTicksY,
+        manualLimit = manualLimit,
+        xAxisLower = xAxisLower,
+        xAxisUpper = xAxisUpper,
+        yAxisLower = yAxisLower,
+        yAxisUpper = yAxisUpper)
 
     analysis <- clinsigClass$new(
         options = options,

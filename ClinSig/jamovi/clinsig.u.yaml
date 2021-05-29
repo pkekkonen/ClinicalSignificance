@@ -140,7 +140,6 @@ children:
                   - type: CheckBox
                     name: showPercentage
                     enable: (table)
-
           - type: Label
             label: ''
             cell:
@@ -170,4 +169,77 @@ children:
                 children:
                   - type: CheckBox
                     name: showScatterPlotAmount
-                    enable: (scatterplot)  
+                    enable: (scatterplot)
+      - type: CollapseBox
+        label: Advanced settings
+        collapsed: true
+        stretchFactor: 1
+        children:
+          - type: CheckBox
+            name: manualColours
+            children:
+              - type: LayoutBox
+                margin: normal
+                style: inline
+                stretchFactor: 1
+                children:
+                  - type: TextBox
+                    name: recovered
+                    format: string
+                    enable: (manualColours)
+                  - type: TextBox
+                    name: improved
+                    format: string
+                    enable: (manualColours)
+                  - type: TextBox
+                    name: unchanged
+                    format: string
+                    enable: (manualColours)
+                  - type: TextBox
+                    name: detoriated
+                    format: string
+                    enable: (manualColours)
+          - type: CheckBox
+            name: manualTicks
+            children:
+              - type: LayoutBox
+                margin: normal
+                style: inline
+                stretchFactor: 1
+                children:
+                  - type: TextBox
+                    name: numberOfTicksX
+                    format: number
+                    enable: (manualTicks)
+                  - type: TextBox
+                    name: numberOfTicksY
+                    format: number
+                    enable: (manualTicks)
+          - type: CheckBox
+            name: manualLimit
+            children:
+              - type: LayoutBox
+                margin: normal
+                style: inline
+                stretchFactor: 1
+                children:
+
+                 - type: TextBox
+                   name: xAxisLower
+                   format: number
+                   enable: (manualLimit)
+
+                 - type: TextBox
+                   name: xAxisUpper
+                   format: number
+                   enable: (manualLimit)
+
+                 - type: TextBox
+                   name: yAxisLower
+                   format: number
+                   enable: (manualLimit)
+
+                 - type: TextBox
+                   name: yAxisUpper
+                   format: number
+                   enable: (manualLimit)

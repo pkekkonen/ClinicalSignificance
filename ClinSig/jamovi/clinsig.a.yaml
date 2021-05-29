@@ -99,7 +99,7 @@ options:
       title: Bar plot
       type: Bool
       default: false
-      
+
     - name: showBarPlotAmount
       title: Show amount in legend
       type: Bool
@@ -109,10 +109,72 @@ options:
       title: Scatter plot
       type: Bool
       default: false
-      
+
     - name: showScatterPlotAmount
       title: Show amount in legend
       type: Bool
       default: false
+
+    - name: manualColours
+      title: "Manual colours (use hexadecimal codes or colour names, eg. red )"
+      type: Bool
+      default: false
+
+    - name: recovered
+      title: "Recovered:"
+      type: String
+      default: "#2C9A3E"
+
+    - name: improved
+      title: "Improved:"
+      type: String
+      default: "#3397CD"
+
+    - name: unchanged
+      title: "Unchanged:"
+      type: String
+      default: "#CD7933"
+
+    - name: detoriated
+      title: "Detoriated:"
+      type: String
+      default: "#C2371C"
+
+    - name: manualTicks
+      title: Manual ticks
+      type: Bool
+      default: false
+
+    - name: numberOfTicksX
+      title: "Number of ticks (x-axis):"
+      type: Number
+      default: 10
+
+    - name: numberOfTicksY
+      title: "Number of ticks (y-axis):"
+      type: Number
+      default: 10
+
+    - name: manualLimit
+      title: "Manual limit"
+      type: Bool
+      default: false
+
+    - name: xAxisLower
+      title: "X lower:"
+      type: Number
+
+    - name: xAxisUpper
+      title: "X upper:"
+      type: Number
+
+    - name: yAxisLower
+      title: "Y lower:"
+      type: Number
+
+    - name: yAxisUpper
+      title: "Y upper:"
+      type: Number
+
 
 ...
