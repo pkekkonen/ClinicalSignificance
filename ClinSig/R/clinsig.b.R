@@ -250,10 +250,18 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         .barplot=function(image, ...) {
 
-            recovered <- self$options$recovered
-            improved <- self$options$improved
-            unchanged <- self$options$unchanged
-            detoriated <- self$options$detoriated
+            if(self$options$manualColours) {
+                recovered <- self$options$recovered
+                improved <- self$options$improved
+                unchanged <- self$options$unchanged
+                detoriated <- self$options$detoriated
+            } else {
+                recovered <- "#2C9A3E"
+                improved <- "#3397CD"
+                unchanged <- "#CD7933"
+                detoriated <- "#C2371C"
+            }
+
             plotData <- image$state
             if (!is.null(plotData)) {
                 status_title <- "Patient status"
@@ -430,8 +438,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 if(self$options$manualTicks) {
                     scatter_plot <- scatter_plot +
-                        scale_x_continuous(limits = xLims, breaks = scales::pretty_breaks(n = self$options$numberOfTicksX)) +
-                        scale_y_continuous(limits = yLims, breaks = scales::pretty_breaks(n = self$options$numberOfTicksY))
+                        scale_x_continuous(limits = xLims, breaks = seq(xLims[1], xLims[2], by = self$options$tickIntervalX)) +
+                        scale_y_continuous(limits = yLims, breaks = seq(yLims[1], yLims[2], by = self$options$tickIntervalY))
                 } else {
                     scatter_plot <- scatter_plot +
                         scale_x_continuous(limits = xLims) +

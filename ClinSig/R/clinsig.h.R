@@ -29,8 +29,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             unchanged = "#CD7933",
             detoriated = "#C2371C",
             manualTicks = FALSE,
-            numberOfTicksX = 10,
-            numberOfTicksY = 10,
+            tickIntervalX = 1,
+            tickIntervalY = 1,
             manualLimit = FALSE,
             xAxisLower = NULL,
             xAxisUpper = NULL,
@@ -150,14 +150,14 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "manualTicks",
                 manualTicks,
                 default=FALSE)
-            private$..numberOfTicksX <- jmvcore::OptionNumber$new(
-                "numberOfTicksX",
-                numberOfTicksX,
-                default=10)
-            private$..numberOfTicksY <- jmvcore::OptionNumber$new(
-                "numberOfTicksY",
-                numberOfTicksY,
-                default=10)
+            private$..tickIntervalX <- jmvcore::OptionNumber$new(
+                "tickIntervalX",
+                tickIntervalX,
+                default=1)
+            private$..tickIntervalY <- jmvcore::OptionNumber$new(
+                "tickIntervalY",
+                tickIntervalY,
+                default=1)
             private$..manualLimit <- jmvcore::OptionBool$new(
                 "manualLimit",
                 manualLimit,
@@ -198,8 +198,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..unchanged)
             self$.addOption(private$..detoriated)
             self$.addOption(private$..manualTicks)
-            self$.addOption(private$..numberOfTicksX)
-            self$.addOption(private$..numberOfTicksY)
+            self$.addOption(private$..tickIntervalX)
+            self$.addOption(private$..tickIntervalY)
             self$.addOption(private$..manualLimit)
             self$.addOption(private$..xAxisLower)
             self$.addOption(private$..xAxisUpper)
@@ -230,8 +230,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         unchanged = function() private$..unchanged$value,
         detoriated = function() private$..detoriated$value,
         manualTicks = function() private$..manualTicks$value,
-        numberOfTicksX = function() private$..numberOfTicksX$value,
-        numberOfTicksY = function() private$..numberOfTicksY$value,
+        tickIntervalX = function() private$..tickIntervalX$value,
+        tickIntervalY = function() private$..tickIntervalY$value,
         manualLimit = function() private$..manualLimit$value,
         xAxisLower = function() private$..xAxisLower$value,
         xAxisUpper = function() private$..xAxisUpper$value,
@@ -261,8 +261,8 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..unchanged = NA,
         ..detoriated = NA,
         ..manualTicks = NA,
-        ..numberOfTicksX = NA,
-        ..numberOfTicksY = NA,
+        ..tickIntervalX = NA,
+        ..tickIntervalY = NA,
         ..manualLimit = NA,
         ..xAxisLower = NA,
         ..xAxisUpper = NA,
@@ -401,8 +401,8 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param unchanged .
 #' @param detoriated .
 #' @param manualTicks .
-#' @param numberOfTicksX .
-#' @param numberOfTicksY .
+#' @param tickIntervalX .
+#' @param tickIntervalY .
 #' @param manualLimit .
 #' @param xAxisLower .
 #' @param xAxisUpper .
@@ -447,8 +447,8 @@ clinsig <- function(
     unchanged = "#CD7933",
     detoriated = "#C2371C",
     manualTicks = FALSE,
-    numberOfTicksX = 10,
-    numberOfTicksY = 10,
+    tickIntervalX = 1,
+    tickIntervalY = 1,
     manualLimit = FALSE,
     xAxisLower,
     xAxisUpper,
@@ -493,8 +493,8 @@ clinsig <- function(
         unchanged = unchanged,
         detoriated = detoriated,
         manualTicks = manualTicks,
-        numberOfTicksX = numberOfTicksX,
-        numberOfTicksY = numberOfTicksY,
+        tickIntervalX = tickIntervalX,
+        tickIntervalY = tickIntervalY,
         manualLimit = manualLimit,
         xAxisLower = xAxisLower,
         xAxisUpper = xAxisUpper,

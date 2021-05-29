@@ -141,22 +141,22 @@ options:
       default: "#C2371C"
 
     - name: manualTicks
-      title: Manual ticks
+      title: Manual ticks (for scatter plot)
       type: Bool
       default: false
 
-    - name: numberOfTicksX
-      title: "Number of ticks (x-axis):"
+    - name: tickIntervalX
+      title: "Tick interval (x-axis):"
       type: Number
-      default: 10
+      default: 1
 
-    - name: numberOfTicksY
-      title: "Number of ticks (y-axis):"
+    - name: tickIntervalY
+      title: "Tick interval (y-axis):"
       type: Number
-      default: 10
+      default: 1
 
     - name: manualLimit
-      title: "Manual limit"
+      title: "Manual limit (for scatter plot)"
       type: Bool
       default: false
 

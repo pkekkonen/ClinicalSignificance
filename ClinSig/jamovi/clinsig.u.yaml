@@ -208,11 +208,11 @@ children:
                 stretchFactor: 1
                 children:
                   - type: TextBox
-                    name: numberOfTicksX
+                    name: tickIntervalX
                     format: number
                     enable: (manualTicks)
                   - type: TextBox
-                    name: numberOfTicksY
+                    name: tickIntervalY
                     format: number
                     enable: (manualTicks)
           - type: CheckBox
