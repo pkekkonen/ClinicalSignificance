@@ -344,6 +344,8 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 min_all <- min(min(plotData$values_pre), min(plotData$values_post))
 
 
+
+
                 if(length(groups) > 5 & !(is.null(self$options$groupingVar))) {  # Show error message if more than five different groupings
                     scatter_plot <-  ggplot() +
                         theme_void() +
@@ -446,6 +448,12 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scale_y_continuous(limits = yLims)
                 }
 
+
+                if(self$options$showCutoffValue) {
+                    scatter_plot <- scatter_plot +
+                        labs(caption = sprintf("Cutoff point: y =  %f",cutoff))+
+                        theme(plot.caption = element_text(size = 10, face = "italic"))
+                }
 
 
                 print(scatter_plot)

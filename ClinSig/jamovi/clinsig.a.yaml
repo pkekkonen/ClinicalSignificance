@@ -155,25 +155,31 @@ options:
       type: Number
       default: 1
 
+    - name: showCutoffValue
+      title: Show cutoff value in scatter plot
+      type: Bool
+      default: false
+
+
     - name: manualLimit
       title: "Manual limit (for scatter plot)"
       type: Bool
       default: false
 
     - name: xAxisLower
-      title: "X lower:"
+      title: "Lower:"
       type: Number
 
     - name: xAxisUpper
-      title: "X upper:"
+      title: "Upper:"
       type: Number
 
     - name: yAxisLower
-      title: "Y lower:"
+      title: "Lower:"
       type: Number
 
     - name: yAxisUpper
-      title: "Y upper:"
+      title: "Upper:"
       type: Number
 
 

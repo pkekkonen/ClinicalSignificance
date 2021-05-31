@@ -31,6 +31,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             manualTicks = FALSE,
             tickIntervalX = 1,
             tickIntervalY = 1,
+            showCutoffValue = FALSE,
             manualLimit = FALSE,
             xAxisLower = NULL,
             xAxisUpper = NULL,
@@ -158,6 +159,10 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "tickIntervalY",
                 tickIntervalY,
                 default=1)
+            private$..showCutoffValue <- jmvcore::OptionBool$new(
+                "showCutoffValue",
+                showCutoffValue,
+                default=FALSE)
             private$..manualLimit <- jmvcore::OptionBool$new(
                 "manualLimit",
                 manualLimit,
@@ -200,6 +205,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..manualTicks)
             self$.addOption(private$..tickIntervalX)
             self$.addOption(private$..tickIntervalY)
+            self$.addOption(private$..showCutoffValue)
             self$.addOption(private$..manualLimit)
             self$.addOption(private$..xAxisLower)
             self$.addOption(private$..xAxisUpper)
@@ -232,6 +238,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         manualTicks = function() private$..manualTicks$value,
         tickIntervalX = function() private$..tickIntervalX$value,
         tickIntervalY = function() private$..tickIntervalY$value,
+        showCutoffValue = function() private$..showCutoffValue$value,
         manualLimit = function() private$..manualLimit$value,
         xAxisLower = function() private$..xAxisLower$value,
         xAxisUpper = function() private$..xAxisUpper$value,
@@ -263,6 +270,7 @@ clinsigOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..manualTicks = NA,
         ..tickIntervalX = NA,
         ..tickIntervalY = NA,
+        ..showCutoffValue = NA,
         ..manualLimit = NA,
         ..xAxisLower = NA,
         ..xAxisUpper = NA,
@@ -403,6 +411,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param manualTicks .
 #' @param tickIntervalX .
 #' @param tickIntervalY .
+#' @param showCutoffValue .
 #' @param manualLimit .
 #' @param xAxisLower .
 #' @param xAxisUpper .
@@ -449,6 +458,7 @@ clinsig <- function(
     manualTicks = FALSE,
     tickIntervalX = 1,
     tickIntervalY = 1,
+    showCutoffValue = FALSE,
     manualLimit = FALSE,
     xAxisLower,
     xAxisUpper,
@@ -495,6 +505,7 @@ clinsig <- function(
         manualTicks = manualTicks,
         tickIntervalX = tickIntervalX,
         tickIntervalY = tickIntervalY,
+        showCutoffValue = showCutoffValue,
         manualLimit = manualLimit,
         xAxisLower = xAxisLower,
         xAxisUpper = xAxisUpper,
