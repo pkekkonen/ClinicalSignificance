@@ -22,7 +22,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                     col_index_group <- grep(self$options$groupingVar, colnames(self$data)) #get the index of the groups column
                     values_group <- self$data[,col_index_group] #get the values of groups
                 } else {
-                    values_group <- rep("", length(values_pre)) # If grouping variable is not present, fill column with nothings's
+                    values_group <- rep("", length(values_pre)) # If grouping variable is not present, fill column with empty strings
                 }
 
                 # Delete rows that has at least one NA
@@ -450,9 +450,10 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
                 if(self$options$showCutoffValue) {
+                    cutoff <- round(cutoff,digits=2)
                     scatter_plot <- scatter_plot +
-                        labs(caption = sprintf("Cutoff point: y =  %f",cutoff))+
-                        theme(plot.caption = element_text(size = 10, face = "italic"))
+                        labs(caption = sprintf("Cutoff point: y =  %.2f", cutoff))+
+                        theme(plot.caption = element_text(size = 8, face = "italic"))
                 }
 
 

@@ -178,10 +178,6 @@ children:
         stretchFactor: 1
         children:
           - type: CheckBox
-            name: showCutoffValue
-          - type: Label
-            label: " "
-          - type: CheckBox
             name: manualColours
             children:
               - type: LayoutBox
@@ -206,6 +202,9 @@ children:
                     enable: (manualColours)
           - type: Label
             label: " "
+          - type: Label
+            label: "Scatter plot"
+
           - type: LayoutBox
             stretchFactor: 1
             margin: large
@@ -288,4 +287,7 @@ children:
                                     name: yAxisUpper
                                     format: number
                                     enable: (manualLimit)
-
+          - type: Label
+            label: " "
+          - type: CheckBox
+            name: showCutoffValue

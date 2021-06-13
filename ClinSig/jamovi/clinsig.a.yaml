@@ -116,7 +116,7 @@ options:
       default: false
 
     - name: manualColours
-      title: "Manual colours (use hexadecimal codes or colour names, eg. red )"
+      title: "Manual colours (use hexadecimal codes or colour names, e.g. red)"
       type: Bool
       default: false
 
@@ -141,7 +141,7 @@ options:
       default: "#C2371C"
 
     - name: manualTicks
-      title: Manual ticks (for scatter plot)
+      title: Manual tick intervals
       type: Bool
       default: false
 
@@ -156,13 +156,13 @@ options:
       default: 1
 
     - name: showCutoffValue
-      title: Show cutoff value in scatter plot
+      title: Show numeric cutoff value
       type: Bool
       default: false
 
 
     - name: manualLimit
-      title: "Manual limit (for scatter plot)"
+      title: "Manual limits"
       type: Bool
       default: false
 

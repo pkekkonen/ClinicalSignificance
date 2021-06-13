@@ -1,16 +1,18 @@
 ---
-title: What the Package Does (Title Case)
+title: Clinical Significance
 name: ClinSig
-version: 0.0.0
+version: 1.1.0
 jms: '1.0'
 authors:
-  - Who wrote it
-maintainer: The package maintainer <yourself@somewhere.net>
-date: '1970-01-01'
-type: R
+  - 'Paulina Lagebjer Kekkonen, Ida Söderberg'
+maintainer: >-
+  Paulina Lagebjer Kekkonen <paulina.kekkonen@hotmail.com>, Ida Söderberg
+  <ida.v.soderberg@gmail.com>
+date: '2021-06-13'
+type: R package
 description: >-
-  More about what it does (maybe more than one line) Use four spaces when
-  indenting paragraphs within the Description.
+  A module for calculating clinical significance in accordance with the
+  Jacobson-Truax method.
 analyses:
   - title: Clinical Significance
     name: clinsig

@@ -1,7 +1,7 @@
 Package: ClinSig
 Type: Package
 Title: Clinical Significance
-Version: 1.0.0
+Version: 1.1.0
 Author: Paulina Lagebjer Kekkonen, Ida Söderberg 
 Maintainer: Paulina Lagebjer Kekkonen <paulina.kekkonen@hotmail.com>, Ida Söderberg <ida.v.soderberg@gmail.com>
 Description: A module for calculating clinical significance in accordance with the Jacobson-Truax method.
