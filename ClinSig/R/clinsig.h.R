@@ -370,7 +370,7 @@ clinsigBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "ClinSig",
                 name = "clinsig",
-                version = c(1,0,0),
+                version = c(1,1,2),
                 options = options,
                 results = clinsigResults$new(options=options),
                 data = data,

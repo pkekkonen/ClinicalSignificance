@@ -415,7 +415,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                         scatter_plot <- scatter_plot +
                             scale_fill_manual(labels = labels, values=c("Detoriated"=detoriated, "Improved"=improved,"Recovered"=recovered, "Unchanged"=unchanged)) +
                             geom_point(aes(fill = factor(patient_status)), shape = 21,size=3, stroke=0) +
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= status_title)
+                            labs(x = "Pre", y = "Post", linetype = "Line explanations", color = "Line explanations", fill= status_title)
                     } else {
 
                         scatter_plot <- scatter_plot +
@@ -424,7 +424,7 @@ clinsigClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                             scale_shape_manual(values=used_filling_shapes) +
                             guides(fill = guide_legend(override.aes = list(shape = 22, size=5)))+
                             guides(shape = guide_legend(override.aes = list(fill = "black")))+
-                            labs(x = "Before treatment", y = "After treatment", linetype = "Line explanations", color = "Line explanations", fill= status_title, shape = self$options$groupingVar)
+                            labs(x = "Pre", y = "Post", linetype = "Line explanations", color = "Line explanations", fill= status_title, shape = self$options$groupingVar)
                     }
 
                 }

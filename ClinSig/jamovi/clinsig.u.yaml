@@ -9,14 +9,14 @@ children:
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
-        label: Pre treatment scores
+        label: Pre scores
         children:
           - type: VariablesListBox
             name: pre
             maxItemCount: 1
             isTarget: true
       - type: TargetLayoutBox
-        label: Post treatment scores
+        label: Post scores
         children:
           - type: VariablesListBox
             name: post
